@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "AdhesionTekPaintTool/1.0.0": {
+        "runtime": {
+          "AdhesionTekPaintTool.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "AdhesionTekPaintTool/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
