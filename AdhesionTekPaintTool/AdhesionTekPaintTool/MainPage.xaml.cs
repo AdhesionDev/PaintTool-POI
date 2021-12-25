@@ -26,6 +26,8 @@ namespace AdhesionTekPaintTool
         private void Debug_Button_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("Debug btn clicked.");
+            System.Diagnostics.Debug.WriteLine($"{colorPicker.Color}");
+            
         }
     }
 }
