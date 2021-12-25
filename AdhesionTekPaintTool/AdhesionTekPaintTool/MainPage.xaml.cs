@@ -19,5 +19,13 @@ namespace AdhesionTekPaintTool
   Windows.UI.Core.CoreInputDeviceTypes.Touch;
 
         }
+
+        /// <summary>
+        /// Call this method for some debug behaviour.
+        /// </summary>
+        private void Debug_Button_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("Debug btn clicked.");
+        }
     }
 }

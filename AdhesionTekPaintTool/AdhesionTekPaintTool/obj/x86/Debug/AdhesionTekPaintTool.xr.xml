@@ -17,6 +17,14 @@
       <RootMethod Name="SetColumnSpan" />
       <RootMethod Name="GetRowSpan" />
       <RootMethod Name="SetRowSpan" />
+      <RootMethod Name="GetRow" />
+      <RootMethod Name="SetRow" />
+    </RootType>
+    <RootType FullName="Windows.UI.Xaml.Controls.Button">
+      <RootProperty Name="HorizontalAlignment" />
+      <RootProperty Name="VerticalAlignment" />
+      <RootProperty Name="Content" />
+      <RootEvent Name="Click" />
     </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.ColumnDefinition">
       <RootProperty Name="MinWidth" />
@@ -34,6 +42,9 @@
       <RootProperty Name="FontSize" />
       <RootProperty Name="Element" />
     </RootType>
+    <RootType FullName="Windows.UI.Xaml.Controls.ScrollViewer">
+      <RootProperty Name="Content" />
+    </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.InkCanvas" />
     <RootType FullName="Windows.UI.Xaml.Controls.TextBlock">
       <RootProperty Name="HorizontalAlignment" />
@@ -45,21 +56,17 @@
       <RootProperty Name="FontSize" />
       <RootProperty Name="TextWrapping" />
     </RootType>
+    <RootType FullName="Windows.UI.Xaml.Controls.RowDefinition" />
     <RootType FullName="Windows.UI.Xaml.Controls.Viewbox">
       <RootProperty Name="Margin" />
-      <RootProperty Name="MaxWidth" />
       <RootProperty Name="Stretch" />
       <RootProperty Name="Child" />
-    </RootType>
-    <RootType FullName="Windows.UI.Xaml.Controls.ListBox">
-      <RootProperty Name="Items" />
     </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.ColorPicker">
       <RootProperty Name="ColorSpectrumShape" />
       <RootProperty Name="IsColorPreviewVisible" />
       <RootProperty Name="IsColorChannelTextInputVisible" />
       <RootProperty Name="IsHexInputVisible" />
-      <RootProperty Name="IsHitTestVisible" />
     </RootType>
     <RootType FullName="AdhesionTekPaintTool.MainPage" />
   </Roots.RootTypes>

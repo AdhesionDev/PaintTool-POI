@@ -46,29 +46,30 @@
             </controls:GridSplitter>
 
             <!--Tools column-->
-            <ListView Grid.Column="2" Grid.ColumnSpan="1">
-                <Viewbox Grid.Column="0" Margin="5" MaxWidth="250" Stretch="Fill">
-                    <ColorPicker x:Name="colorPicker"
-                    ColorSpectrumShape="Ring"
-                    IsColorPreviewVisible="False"
-                    IsColorChannelTextInputVisible="False"
-                    IsHexInputVisible="False"
-                    IsHitTestVisible="False"
-                                 
-                                 
-                                 />
-                </Viewbox>
+            <ScrollViewer Grid.Column="2" Grid.ColumnSpan="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    
+                    <Viewbox Grid.Row="0" Margin="5" Stretch="Fill">
+                        <ColorPicker x:Name="colorPicker"
+                        ColorSpectrumShape="Ring"
+                        IsColorPreviewVisible="False"
+                        IsColorChannelTextInputVisible="False"
+                        IsHexInputVisible="False"
+                        />
+                    </Viewbox>
 
-                <ListBox Grid.Column="1">
+                    <Grid Grid.Row="1">
 
-                    <TextBlock FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">
+                        <TextBlock FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">
 
-                    </TextBlock>
-                </ListBox>
-
-
-
-            </ListView>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
 
 
             <!--Column Grid Splitter-->
@@ -89,6 +90,6 @@
             </InkCanvas>
         </Grid>
 
-
+        <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Debug_Button_Click">Debug</Button>
     </Grid>
 </Page>
