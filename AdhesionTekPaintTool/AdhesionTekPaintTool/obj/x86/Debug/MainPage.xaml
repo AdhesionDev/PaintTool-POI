@@ -1,0 +1,95 @@
+﻿<Page xmlns:my="using:Microsoft.UI.Xaml.Controls" 
+    x:Class="AdhesionTekPaintTool.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:local="using:AdhesionTekPaintTool"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+        </Grid.RowDefinitions>
+
+
+        <Grid>
+
+            <!--Column Grid Splitter-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="150" Width="200"></ColumnDefinition>
+                <ColumnDefinition x:ConnectionId='2' Width="5" x:Name="Gripper"></ColumnDefinition>
+                <ColumnDefinition MinWidth="150" Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <ListView Grid.Column="0" 
+                      Margin="0,0,5,0" 
+                      Grid.ColumnSpan="2" >
+
+                <TextBlock FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."></TextBlock>
+            </ListView>
+
+            <!--Column Grid Splitter-->
+            <controls:GridSplitter Grid.Column="1" ResizeBehavior="BasedOnAlignment"
+            ResizeDirection="Auto" Background="Gray" Foreground="White" FontSize="13" Grid.RowSpan="1"  >
+                <controls:GridSplitter.Element>
+                    <Grid>
+                        <TextBlock HorizontalAlignment="Right" IsHitTestVisible="False" VerticalAlignment="Bottom"  
+                               Text="&#xE784;" Foreground="Black" FontFamily="Segoe MDL2 Assets">
+                        </TextBlock>
+                    </Grid>
+                </controls:GridSplitter.Element>
+            </controls:GridSplitter>
+
+            <!--Tools column-->
+            <ListView Grid.Column="2" Grid.ColumnSpan="1">
+                <Viewbox Grid.Column="0" Margin="5" MaxWidth="250" Stretch="Fill">
+                    <ColorPicker x:ConnectionId='4' x:Name="colorPicker"
+                    ColorSpectrumShape="Ring"
+                    IsColorPreviewVisible="False"
+                    IsColorChannelTextInputVisible="False"
+                    IsHexInputVisible="False"
+                    IsHitTestVisible="False"
+                                 
+                                 
+                                 />
+                </Viewbox>
+
+                <ListBox Grid.Column="1">
+
+                    <TextBlock FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">
+
+                    </TextBlock>
+                </ListBox>
+
+
+
+            </ListView>
+
+
+            <!--Column Grid Splitter-->
+            <controls:GridSplitter Grid.Column="3" ResizeBehavior="BasedOnAlignment"
+            ResizeDirection="Auto" Background="Gray" Foreground="White" FontSize="13" Grid.RowSpan="1"  >
+                <controls:GridSplitter.Element>
+                    <Grid>
+                        <TextBlock HorizontalAlignment="Right" IsHitTestVisible="False" VerticalAlignment="Bottom"  
+                               Text="&#xE784;" Foreground="Black" FontFamily="Segoe MDL2 Assets">
+                        </TextBlock>
+                    </Grid>
+                </controls:GridSplitter.Element>
+            </controls:GridSplitter>
+
+            <!--Canvas column-->
+            <InkCanvas x:ConnectionId='3' x:Name="inkCanvas" Grid.Column="4">
+
+            </InkCanvas>
+        </Grid>
+
+
+    </Grid>
+</Page>
+
