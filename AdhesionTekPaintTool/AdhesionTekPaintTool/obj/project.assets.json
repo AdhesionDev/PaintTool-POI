@@ -10769,7 +10769,8 @@
     "UAP,Version=v10.0.17763": [
       "Microsoft.NETCore.UniversalWindowsPlatform >= 6.2.12",
       "Microsoft.Toolkit.Uwp >= 7.1.2",
-      "Microsoft.Toolkit.Uwp.UI.Controls >= 7.1.2"
+      "Microsoft.Toolkit.Uwp.UI.Controls >= 7.1.2",
+      "Microsoft.UI.Xaml >= 2.7.0"
     ]
   },
   "packageFolders": {
@@ -10823,6 +10824,10 @@
           "Microsoft.Toolkit.Uwp.UI.Controls": {
             "target": "Package",
             "version": "[7.1.2, )"
+          },
+          "Microsoft.UI.Xaml": {
+            "target": "Package",
+            "version": "[2.7.0, )"
           }
         },
         "imports": [

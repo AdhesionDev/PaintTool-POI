@@ -50,6 +50,10 @@
             "Microsoft.Toolkit.Uwp.UI.Controls": {
               "target": "Package",
               "version": "[7.1.2, )"
+            },
+            "Microsoft.UI.Xaml": {
+              "target": "Package",
+              "version": "[2.7.0, )"
             }
           },
           "imports": [

@@ -1,6 +1,10 @@
 {
   "version": 2,
+<<<<<<< Updated upstream
   "dgSpecHash": "lS6mmfoSaUDvWFomx9suqkTfLgyBqerG2SPLpbL0pnGKP2EglfTfx9jO7kMT8kCz/IpOCRhX7bPjHADQZY5GyA==",
+=======
+  "dgSpecHash": "3jpJYdZcJsprTDcix9Qxos6LJf6hb1OixI7RL2l1P/oYxIl5A62tR2B6lu2y6FJgpeu3SZw1q61bL/juUYNPYw==",
+>>>>>>> Stashed changes
   "success": true,
   "projectFilePath": "D:\\UWP Projects\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool.csproj",
   "expectedPackageFiles": [
