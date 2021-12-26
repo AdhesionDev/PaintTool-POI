@@ -18,18 +18,18 @@ namespace AdhesionTekPaintTool
             InitializeComponent();
 
 
-            inkCanvas.InkPresenter.InputDeviceTypes =
-  Windows.UI.Core.CoreInputDeviceTypes.Mouse |
-  Windows.UI.Core.CoreInputDeviceTypes.Pen |
-  Windows.UI.Core.CoreInputDeviceTypes.Touch;
+            /*          inkCanvas.InkPresenter.InputDeviceTypes =
+            Windows.UI.Core.CoreInputDeviceTypes.Mouse |
+            Windows.UI.Core.CoreInputDeviceTypes.Pen |
+            Windows.UI.Core.CoreInputDeviceTypes.Touch;
 
-            // Set initial ink stroke attributes.
-            InkDrawingAttributes drawingAttributes = new InkDrawingAttributes();
-            drawingAttributes.Color = Windows.UI.Colors.Black;
-            drawingAttributes.IgnorePressure = false;
-            drawingAttributes.FitToCurve = true;
-            inkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
-
+                      // Set initial ink stroke attributes.
+                      InkDrawingAttributes drawingAttributes = new InkDrawingAttributes();
+                      drawingAttributes.Color = Windows.UI.Colors.Black;
+                      drawingAttributes.IgnorePressure = false;
+                      drawingAttributes.FitToCurve = true;
+                      inkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
+                      */
         }
 
         /// <summary>
@@ -41,10 +41,11 @@ namespace AdhesionTekPaintTool
         }
 
         private void colorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
-        {
+        {/*
             InkDrawingAttributes drawingAttributes = inkCanvas.InkPresenter.CopyDefaultDrawingAttributes();
             drawingAttributes.Color = sender.Color;
             inkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
+            */
         }
     }
 }
