@@ -10773,18 +10773,18 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\fangj\\.nuget\\packages\\": {},
+    "C:\\Users\\ADT\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
     "C:\\Program Files (x86)\\Microsoft SDKs\\UWPNuGetPackages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\UWP Projects\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool.csproj",
+      "projectUniqueName": "C:\\Users\\ADT\\Documents\\GitHub\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool.csproj",
       "projectName": "AdhesionTekPaintTool",
-      "projectPath": "D:\\UWP Projects\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool.csproj",
-      "packagesPath": "C:\\Users\\fangj\\.nuget\\packages\\",
-      "outputPath": "D:\\UWP Projects\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\obj\\",
+      "projectPath": "C:\\Users\\ADT\\Documents\\GitHub\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool.csproj",
+      "packagesPath": "C:\\Users\\ADT\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\ADT\\Documents\\GitHub\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "fallbackFolders": [
@@ -10792,7 +10792,7 @@
         "C:\\Program Files (x86)\\Microsoft SDKs\\UWPNuGetPackages\\"
       ],
       "configFilePaths": [
-        "C:\\Users\\fangj\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ADT\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

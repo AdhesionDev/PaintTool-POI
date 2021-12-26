@@ -52,13 +52,14 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    
+
                     <Viewbox Grid.Row="0" Margin="5" Stretch="Fill">
                         <ColorPicker x:Name="colorPicker"
                         ColorSpectrumShape="Ring"
                         IsColorPreviewVisible="False"
                         IsColorChannelTextInputVisible="False"
                         IsHexInputVisible="False"
+                                     ColorChanged="colorPicker_ColorChanged"
                         />
                     </Viewbox>
 
@@ -88,6 +89,7 @@
             <InkCanvas x:Name="inkCanvas" Grid.Column="4">
 
             </InkCanvas>
+            <my:RatingControl/>
         </Grid>
 
         <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Debug_Button_Click">Debug</Button>

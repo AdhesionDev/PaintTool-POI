@@ -46,6 +46,7 @@
       <RootProperty Name="Content" />
     </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.InkCanvas" />
+    <RootType FullName="Microsoft.UI.Xaml.Controls.RatingControl" />
     <RootType FullName="Windows.UI.Xaml.Controls.TextBlock">
       <RootProperty Name="HorizontalAlignment" />
       <RootProperty Name="IsHitTestVisible" />
@@ -67,6 +68,7 @@
       <RootProperty Name="IsColorPreviewVisible" />
       <RootProperty Name="IsColorChannelTextInputVisible" />
       <RootProperty Name="IsHexInputVisible" />
+      <RootEvent Name="ColorChanged" />
     </RootType>
     <RootType FullName="AdhesionTekPaintTool.MainPage" />
   </Roots.RootTypes>
