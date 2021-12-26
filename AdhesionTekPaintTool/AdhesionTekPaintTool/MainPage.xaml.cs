@@ -15,7 +15,7 @@ namespace AdhesionTekPaintTool
         public MainPage()
         {
             //this.InitializeComponent();
-            InitializeComponent();
+            this.InitializeComponent();
 
 
             /*          inkCanvas.InkPresenter.InputDeviceTypes =

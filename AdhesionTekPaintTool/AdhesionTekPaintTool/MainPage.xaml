@@ -23,19 +23,101 @@
 
             <!--Column Grid Splitter-->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="150" Width="200"></ColumnDefinition>
+                <ColumnDefinition MinWidth="210" Width="200"></ColumnDefinition>
                 <ColumnDefinition Width="5" x:Name="Gripper"></ColumnDefinition>
                 <ColumnDefinition MinWidth="150" Width="200"></ColumnDefinition>
                 <ColumnDefinition Width="5"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <ListView Grid.Column="0" 
-                      Margin="0,0,5,0" 
-                      Grid.ColumnSpan="2" >
+            <ScrollViewer Grid.Column="0" Grid.ColumnSpan="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
 
-                <TextBlock FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."></TextBlock>
-            </ListView>
+                    <Border BorderBrush="Gray" BorderThickness="2" Margin="2">
+                        <Rectangle Grid.Row="0" Fill="LightGray" Height="200" Margin="0" />
+                    </Border>
+
+                    <GridView Grid.Row="1" Margin="3" HorizontalAlignment="Center">
+                        <GridView.ItemContainerStyle>
+                            <Style TargetType="GridViewItem">
+                                <Setter Property="Margin" Value="0, 0, 0, 0"/>
+                                <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+                            </Style>
+                        </GridView.ItemContainerStyle>
+
+                        <GridView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsWrapGrid x:Name="MaxItemsWrapGrid"
+                           MaximumRowsOrColumns="1"
+                           Orientation="Horizontal"
+                                               
+                                               />
+                            </ItemsPanelTemplate>
+                        </GridView.ItemsPanel>
+
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="50*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Blending mode"  MinWidth="200" Margin="2" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+                            <muxc:DropDownButton Content="Normal" Grid.Row="0" Grid.Column="1"  >
+                                <muxc:DropDownButton.Flyout>
+                                    <MenuFlyout Placement="Bottom">
+                                        <MenuFlyoutItem Text="Darken"/>
+                                        <MenuFlyoutItem Text="Lighten"/>
+                                        <MenuFlyoutItem Text="Mix"/>
+
+                                    </MenuFlyout>
+                                </muxc:DropDownButton.Flyout>
+                            </muxc:DropDownButton>
+                        </Grid>
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="50*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Transparency"  MinWidth="200" Margin="2" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+                            <Slider MinWidth="90" MaxWidth="2000" Minimum="0" Maximum="100" StepFrequency="1" HorizontalAlignment="Right"
+         muxc:Grid.Column="1" Margin="0,0,0,0"/>
+                        </Grid>
+
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="60*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Mask"  MinWidth="200" Margin="2" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+                            <Grid Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Column="0" Width="40" Margin="0,0,0,0" HorizontalAlignment="Center"  VerticalAlignment="Center">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72E;"/>
+                                </Button>
+                                <Button Grid.Column="1"  Width="40" Margin="0,0,0,0" HorizontalAlignment="Center"  VerticalAlignment="Center">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE759;"/>
+                                </Button>
+                                <Button Grid.Column="2"  Width="40" Margin="0,0,0,0" HorizontalAlignment="Center"  VerticalAlignment="Center">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE799;"/>
+                                </Button>
+                            </Grid>
+                        </Grid>
+
+
+
+                    </GridView>
+                    <TextBlock Grid.Row="2" FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."></TextBlock>
+                </Grid>
+            </ScrollViewer>
 
             <!--Column Grid Splitter-->
             <controls:GridSplitter Grid.Column="1" ResizeBehavior="BasedOnAlignment"
@@ -55,9 +137,10 @@
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <Viewbox Grid.Row="0" Margin="5" Stretch="Fill">
+                    <Viewbox Grid.Row="0" Margin="25" Stretch="Fill">
                         <ColorPicker x:Name="colorPicker"
                         ColorSpectrumShape="Ring"
                         IsColorPreviewVisible="False"
@@ -67,9 +150,59 @@
                         />
                     </Viewbox>
 
-                    <Grid Grid.Row="1">
+                    <Grid Grid.Row="1" Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
 
-                        <TextBlock FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">
+                        <GridView Grid.Row="0" >
+                            <GridView.ItemContainerStyle>
+                                <Style TargetType="GridViewItem">
+                                    <Setter Property="Margin" Value="0, 0, 0, 0"/>
+                                </Style>
+                            </GridView.ItemContainerStyle>
+
+                            <GridView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ItemsWrapGrid x:Name="MaxItemsWrapGrid"
+                           MaximumRowsOrColumns="1000"
+                           Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </GridView.ItemsPanel>
+
+
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED63;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7E6;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED64;"/>
+                            </muxc:Button>
+
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEDFB;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE75C;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEF3C;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF407;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF408;"/>
+                            </muxc:Button>
+
+
+                        </GridView>
+
+                        <TextBlock Grid.Row="1" FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">
 
                         </TextBlock>
                     </Grid>
