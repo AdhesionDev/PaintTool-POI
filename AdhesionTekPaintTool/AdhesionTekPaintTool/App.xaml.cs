@@ -12,6 +12,12 @@ namespace AdhesionTekPaintTool
     /// </summary>
     sealed partial class App : Application
     {
+        #region Private Field
+
+        private SampleClass _sample;
+
+        #endregion
+
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 已执行，逻辑上等同于 main() 或 WinMain()。
@@ -20,6 +26,8 @@ namespace AdhesionTekPaintTool
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            _sample = new SampleClass(1f);
         }
 
         /// <summary>

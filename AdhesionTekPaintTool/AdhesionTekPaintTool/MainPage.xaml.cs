@@ -37,9 +37,7 @@ namespace AdhesionTekPaintTool
         /// </summary>
         private void Debug_Button_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("Debug btn clicked.");
-            System.Diagnostics.Debug.WriteLine($"{colorPicker.Color}");
-            
+            System.Diagnostics.Debug.WriteLine($"Get singleton var: {SampleClass.Instance.sampleVar}");
         }
 
         private void colorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
