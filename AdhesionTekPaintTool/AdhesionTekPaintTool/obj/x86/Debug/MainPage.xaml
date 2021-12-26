@@ -52,13 +52,14 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    
+
                     <Viewbox Grid.Row="0" Margin="5" Stretch="Fill">
                         <ColorPicker x:ConnectionId='5' x:Name="colorPicker"
                         ColorSpectrumShape="Ring"
                         IsColorPreviewVisible="False"
                         IsColorChannelTextInputVisible="False"
                         IsHexInputVisible="False"
+                                                                            
                         />
                     </Viewbox>
 
