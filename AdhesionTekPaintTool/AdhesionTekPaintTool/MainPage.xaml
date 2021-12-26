@@ -89,7 +89,6 @@
             <InkCanvas x:Name="inkCanvas" Grid.Column="4">
 
             </InkCanvas>
-            <my:RatingControl/>
         </Grid>
 
         <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Debug_Button_Click">Debug</Button>

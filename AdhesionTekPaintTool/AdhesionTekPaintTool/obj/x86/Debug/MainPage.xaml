@@ -89,7 +89,6 @@
             <InkCanvas x:ConnectionId='4' x:Name="inkCanvas" Grid.Column="4">
 
             </InkCanvas>
-            <my:RatingControl/>
         </Grid>
 
         <Button x:ConnectionId='2' HorizontalAlignment="Right" VerticalAlignment="Bottom"                           >Debug</Button>
