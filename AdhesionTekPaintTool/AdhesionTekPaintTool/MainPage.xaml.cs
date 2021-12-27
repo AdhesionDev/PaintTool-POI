@@ -92,7 +92,10 @@ namespace AdhesionTekPaintTool
             CoreApplication.Exit();
         }
 
+        private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
 
+        }
     }
 
 

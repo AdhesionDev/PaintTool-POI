@@ -35,14 +35,14 @@
                 <!--Column Grid Splitter-->
                 <ColumnDefinition Width="2" x:Name="Gripper"></ColumnDefinition>
                 <!--Tools-->
-                <ColumnDefinition MinWidth="150" Width="170"></ColumnDefinition>
+                <ColumnDefinition MinWidth="150" Width="200"></ColumnDefinition>
                 <!--Column Grid Splitter-->
                 <ColumnDefinition Width="2"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition MinWidth="150"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
 
-            <!--Column Grid Splitter-->
+            <!--Preview And Layers-->
             <ScrollViewer Grid.Column="0" Grid.ColumnSpan="1">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -68,7 +68,7 @@
 
                         <GridView.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <ItemsWrapGrid x:Name="MaxItemsWrapGrid"
+                                <ItemsWrapGrid x:Name="Controls"
                            MaximumRowsOrColumns="1"
                            Orientation="Horizontal"
                                                
@@ -139,17 +139,17 @@
             </controls:GridSplitter>
 
             <!--Tools column-->
-            <ScrollViewer Grid.Column="2" Grid.ColumnSpan="1">
+            <ScrollViewer Grid.Column="2" Grid.ColumnSpan="1" ViewChanged="ScrollViewer_ViewChanged">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition MinHeight="30"/>
+                        <RowDefinition MinHeight="150" Height="200"/>
                         <RowDefinition Height="3"/>
-                        <RowDefinition MinHeight="30"/>
+                        <RowDefinition MinHeight="100" Height="100" />
                         <RowDefinition Height="3"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <!--Color Picker-->
-                    <Grid Grid.Row="0" MinHeight="30" Margin="0">
+                    <Grid VerticalAlignment="Top" Grid.Row="0" MinHeight="150" Height="150" Margin="0">
                         <Viewbox Grid.Row="0" Margin="25" Stretch="Uniform">
                             <ColorPicker x:Name="colorPicker"
                             ColorSpectrumShape="Ring"
@@ -165,26 +165,31 @@
                     ResizeDirection="Auto" Background="Gray" Height="2" HorizontalAlignment="Stretch">
                     </controls:GridSplitter>
                     <!--Painting Tools-->
-                    <ScrollViewer Grid.Row="2" MinHeight="10" Height="auto" Margin="4" HorizontalAlignment="Stretch"
-          VerticalAlignment="Stretch"
+                    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
+                          Grid.Row="2" 
+                          Margin="0,0,10,0" 
+                          MinHeight="100" 
+                          VerticalAlignment="Top">
+                        <ScrollViewer Grid.Row="0" MinHeight="30" Margin="5,0,5,0"
 >
-                        <GridView x:Name="toolsGridView" Grid.Row="2" >
-                            <GridView.ItemContainerStyle>
-                                <Style TargetType="GridViewItem">
-                                    <Setter Property="Margin" Value="0, 0, 0, 0"/>
-                                </Style>
-                            </GridView.ItemContainerStyle>
-
-                            <GridView.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <ItemsWrapGrid x:Name="MaxItemsWrapGrid"
+                            <GridView x:Name="toolsGridView" Grid.Row="2" >
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Margin" Value="0, 0, 0, 0"/>
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                                <GridView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ItemsWrapGrid x:Name="MaxItemsWrapGrid"
                            MaximumRowsOrColumns="1000"
                            Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </GridView.ItemsPanel>
-                        </GridView>
+                                    </ItemsPanelTemplate>
+                                </GridView.ItemsPanel>
+                            </GridView>
 
-                    </ScrollViewer>
+                        </ScrollViewer>
+                    </Grid>
+
 
                     <!--Row Grid Splitter-->
                     <controls:GridSplitter Foreground="White" Grid.Row="3" ResizeBehavior="BasedOnAlignment"
@@ -204,7 +209,6 @@
                 </Grid>
             </ScrollViewer>
 
-
             <!--Column Grid Splitter-->
             <controls:GridSplitter Grid.Column="3" ResizeBehavior="BasedOnAlignment"
             ResizeDirection="Auto" Background="Gray" Foreground="White">
@@ -212,12 +216,16 @@
 
             <!--Canvas column-->
 
-            <Canvas Width="120" Height="120" Background="Gray" x:Name="mainCanvas" Grid.Column="4">
-                <Rectangle Fill="Red" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="0" />
-                <Rectangle Fill="Blue" Canvas.Left="20" Canvas.Top="20" Canvas.ZIndex="1" />
-                <Rectangle Fill="Green" Canvas.Left="40" Canvas.Top="40" Canvas.ZIndex="2" />
-                <Rectangle Fill="Yellow" Canvas.Left="60" Canvas.Top="60" Canvas.ZIndex="3" />
-            </Canvas>
+            <Grid Grid.Column="4" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+                <Canvas MinWidth="300" Width="100" Height="100" Background="Gray" x:Name="mainCanvas" Grid.Column="4">
+                    <Rectangle Fill="Red" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="0" />
+                    <Rectangle Fill="Blue" Canvas.Left="20" Canvas.Top="20" Canvas.ZIndex="1" />
+                    <Rectangle Fill="Green" Canvas.Left="40" Canvas.Top="40" Canvas.ZIndex="2" />
+                    <Rectangle Fill="Yellow" Canvas.Left="60" Canvas.Top="60" Canvas.ZIndex="3" />
+                </Canvas>
+            </Grid>
+
+
         </Grid>
         <!--Tool Bar-->
         <muxc:MenuBar Grid.Row="0">
@@ -275,6 +283,8 @@
                 </MenuFlyoutItem>
             </muxc:MenuBarItem>
         </muxc:MenuBar>
+
+
         <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Debug_Button_Click">Debug</Button>
     </Grid>
 </Page>
