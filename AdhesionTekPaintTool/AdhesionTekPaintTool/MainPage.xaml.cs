@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Input.Inking;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 
@@ -18,7 +22,7 @@ namespace AdhesionTekPaintTool
             //this.InitializeComponent();
             this.InitializeComponent();
             InkCanvas inkCanvas = new InkCanvas();
-            PopulateToolButtons();
+            AddToolItems();
 
             /*          inkCanvas.InkPresenter.InputDeviceTypes =
             Windows.UI.Core.CoreInputDeviceTypes.Mouse |
@@ -34,15 +38,20 @@ namespace AdhesionTekPaintTool
                       */
         }
 
-        private void PopulateToolButtons()
+        private void AddToolItems()
         {
-            List<Button> buttons = new List<Button>();
-            Button button = new Button();
-            button.FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets");
-            button.Content = "\xED63";
-            buttons.Add(button);
-            buttons.Add(new ToolButton("ED63"));
-            toolsGridView.ItemsSource = buttons;
+            List<ToolItemGrid> items = new List<ToolItemGrid>();
+
+            items.Add(new ToolItemGrid("\xED63", "Pencel"));
+            items.Add(new ToolItemGrid("\xE7E6", "High Light"));
+            items.Add(new ToolItemGrid("\xEDFB", "Pen"));
+            items.Add(new ToolItemGrid("\xE75C", "消しゴム"));
+            items.Add(new ToolItemGrid("\xEF3C", "Color Picker"));
+            items.Add(new ToolItemGrid("\xE759", "Move"));
+            items.Add(new ToolItemGrid("\xF407", "Selection"));
+            items.Add(new ToolItemGrid("\xF408", "Free Selection"));
+            items.Add(new ToolItemGrid("\xE710", "Add new Item"));
+            toolsGridView.ItemsSource = items;
 
         }
 
@@ -61,23 +70,105 @@ namespace AdhesionTekPaintTool
             inkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
             */
         }
+
+        private async void showAbout()
+        {
+
+            ContentDialog aboutDialog = new ContentDialog()
+            {
+                Title = "About",
+                Content = "Adhesion Painting Tool\n Version: Test",
+                CloseButtonText = "OK"
+            };
+            await aboutDialog.ShowAsync();
+        }
+
+        private void About_Button_Click(object sender, RoutedEventArgs e)
+        {
+            showAbout();
+        }
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            CoreApplication.Exit();
+        }
+
+
     }
 
 
 
 }
-class ToolButton : Button
+/***
+ * 
+ * <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED63;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7E6;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED64;"/>
+                            </muxc:Button>
+
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEDFB;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE75C;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEF3C;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF407;"/>
+                            </muxc:Button>
+                            <muxc:Button Height="40" Width="40">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF408;"/>
+                            </muxc:Button>
+***/
+class ToolItemGrid : Grid
 {
-
-    public ToolButton(string iconString)
+    private IconElement iconElement;
+    private TextBlock descripution;
+    public ToolItemGrid(string iconString, string descriputionString)
     {
-        if (string.IsNullOrEmpty(iconString))
-        {
-            throw new System.ArgumentException($"'{nameof(iconString)}' cannot be null or empty.", nameof(iconString));
-        }
+        FontIcon icon = new FontIcon();
+        icon.FontFamily = new FontFamily("Segoe MDL2 Assets");
+        icon.Glyph = iconString;
 
-        this.FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets");
-        this.Content = "\\" + "x" + iconString;
+        TextBlock descriputionText = new TextBlock();
+        descriputionText.Text = descriputionString;
+
+        SetIconAndText(icon, descriputionText);
+    }
+    public ToolItemGrid(IconElement icon, TextBlock descripution)
+    {
+        this.SetIconAndText(icon, descripution);
     }
 
+
+    private void SetIconAndText(IconElement icon, TextBlock descripution)
+    {
+        this.iconElement = icon;
+        this.descripution = descripution;
+
+        this.iconElement.SetValue(Grid.ColumnProperty, 0);
+        this.iconElement.VerticalAlignment = VerticalAlignment.Center;
+
+        this.descripution.SetValue(Grid.ColumnProperty, 1);
+        this.descripution.TextWrapping = TextWrapping.WrapWholeWords;
+        this.descripution.FontSize = 8;
+
+        ColumnDefinition iconColumn = new ColumnDefinition();
+        this.ColumnDefinitions.Add(iconColumn);
+        ColumnDefinition descriputionColumn = new ColumnDefinition();
+        this.ColumnDefinitions.Add(descriputionColumn);
+        this.SetValue(MarginProperty, new Thickness(10, 0, 10, 0));
+        this.Width = 64;
+
+
+
+        this.Children.Add(icon);
+        this.Children.Add(descripution);
+    }
 }

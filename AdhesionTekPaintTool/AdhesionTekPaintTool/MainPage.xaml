@@ -16,39 +16,48 @@
     </Page.Resources>
 
 
-
+    <!--Root Grid-->
     <Grid >
 
 
         <Grid.RowDefinitions>
+            <!--Tool Bar-->
             <RowDefinition Height="40"></RowDefinition>
+            <!--Work Space-->
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
-
+        <!--Work Space-->
         <Grid Grid.Row="1">
-
-            <!--Column Grid Splitter-->
             <Grid.ColumnDefinitions>
+                <!--Canvas Preview-->
                 <ColumnDefinition MinWidth="210" Width="200"></ColumnDefinition>
-                <ColumnDefinition Width="5" x:Name="Gripper"></ColumnDefinition>
-                <ColumnDefinition MinWidth="150" Width="200"></ColumnDefinition>
-                <ColumnDefinition Width="5"></ColumnDefinition>
+                <!--Column Grid Splitter-->
+                <ColumnDefinition Width="2" x:Name="Gripper"></ColumnDefinition>
+                <!--Tools-->
+                <ColumnDefinition MinWidth="150" Width="170"></ColumnDefinition>
+                <!--Column Grid Splitter-->
+                <ColumnDefinition Width="2"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
+
+            <!--Column Grid Splitter-->
             <ScrollViewer Grid.Column="0" Grid.ColumnSpan="1">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <!--Preview-->
                         <RowDefinition/>
+                        <!--Controls-->
                         <RowDefinition/>
+                        <!--Layers-->
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-
+                    <!--Preview-->
                     <Border BorderBrush="Gray" BorderThickness="2" Margin="2">
                         <Rectangle Grid.Row="0" Fill="LightGray" Height="200" Margin="0" />
                     </Border>
-
+                    <!--Controls-->
                     <GridView Grid.Row="1" Margin="3" HorizontalAlignment="Center">
                         <GridView.ItemContainerStyle>
                             <Style TargetType="GridViewItem">
@@ -107,66 +116,59 @@
                                     <ColumnDefinition></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
 
-                                <Button Grid.Column="0" Width="40" Margin="0,0,0,0" HorizontalAlignment="Center"  VerticalAlignment="Center">
-                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72E;"/>
+                                <Button Grid.Column="0" Width="30" Margin="0,0,0,0" HorizontalAlignment="Center"  VerticalAlignment="Center">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72E;" FontSize="10"/>
                                 </Button>
-                                <Button Grid.Column="1"  Width="40" Margin="0,0,0,0" HorizontalAlignment="Center"  VerticalAlignment="Center">
-                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE759;"/>
+                                <Button Grid.Column="1"  Width="30" Margin="0,0,0,0" HorizontalAlignment="Center"  VerticalAlignment="Center">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE759;" FontSize="10"/>
                                 </Button>
-                                <Button Grid.Column="2"  Width="40" Margin="0,0,0,0" HorizontalAlignment="Center"  VerticalAlignment="Center">
-                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE799;"/>
+                                <Button Grid.Column="2"  Width="30" Margin="0,0,0,0" HorizontalAlignment="Center"  VerticalAlignment="Center">
+                                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE799;" FontSize="10"/>
                                 </Button>
                             </Grid>
                         </Grid>
-
-
-
                     </GridView>
+                    <!--Layers-->
                     <TextBlock Grid.Row="2" FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."></TextBlock>
                 </Grid>
             </ScrollViewer>
 
             <!--Column Grid Splitter-->
             <controls:GridSplitter Grid.Column="1" ResizeBehavior="BasedOnAlignment"
-            ResizeDirection="Auto" Background="Gray" Foreground="White" FontSize="13" Grid.RowSpan="1"  >
-                <controls:GridSplitter.Element>
-                    <Grid>
-                        <TextBlock HorizontalAlignment="Right" IsHitTestVisible="False" VerticalAlignment="Bottom"  
-                               Text="&#xE784;" Foreground="Black" FontFamily="Segoe MDL2 Assets">
-                        </TextBlock>
-                    </Grid>
-                </controls:GridSplitter.Element>
+            ResizeDirection="Auto" Background="Gray" Foreground="White" >
             </controls:GridSplitter>
-
-
 
             <!--Tools column-->
             <ScrollViewer Grid.Column="2" Grid.ColumnSpan="1">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition MinHeight="30"/>
+                        <RowDefinition Height="3"/>
+                        <RowDefinition MinHeight="30"/>
+                        <RowDefinition Height="3"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
+                    <!--Color Picker-->
+                    <Grid Grid.Row="0" MinHeight="30" Margin="0">
+                        <Viewbox Grid.Row="0" Margin="25" Stretch="Uniform">
+                            <ColorPicker x:Name="colorPicker"
+                            ColorSpectrumShape="Ring"
+                            IsColorPreviewVisible="False"
+                            IsColorChannelTextInputVisible="False"
+                            IsHexInputVisible="False"
+                            ColorChanged="colorPicker_ColorChanged"/>
+                        </Viewbox>
+                    </Grid>
 
-                    <Viewbox Grid.Row="0" Margin="25" Stretch="Fill">
-                        <ColorPicker x:Name="colorPicker"
-                        ColorSpectrumShape="Ring"
-                        IsColorPreviewVisible="False"
-                        IsColorChannelTextInputVisible="False"
-                        IsHexInputVisible="False"
-                                     ColorChanged="colorPicker_ColorChanged"
-                        />
-                    </Viewbox>
-
-                    <Grid Grid.Row="1" Margin="5">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-
-                        <GridView x:Name="toolsGridView" Grid.Row="0" >
+                    <!--Row Grid Splitter-->
+                    <controls:GridSplitter Foreground="White" Grid.Row="1" ResizeBehavior="BasedOnAlignment"
+                    ResizeDirection="Auto" Background="Gray" Height="2" HorizontalAlignment="Stretch">
+                    </controls:GridSplitter>
+                    <!--Painting Tools-->
+                    <ScrollViewer Grid.Row="2" MinHeight="10" Height="auto" Margin="4" HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+>
+                        <GridView x:Name="toolsGridView" Grid.Row="2" >
                             <GridView.ItemContainerStyle>
                                 <Style TargetType="GridViewItem">
                                     <Setter Property="Margin" Value="0, 0, 0, 0"/>
@@ -180,55 +182,32 @@
                            Orientation="Horizontal"/>
                                 </ItemsPanelTemplate>
                             </GridView.ItemsPanel>
-
-
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED63;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7E6;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED64;"/>
-                            </muxc:Button>
-
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEDFB;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE75C;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEF3C;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF407;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF408;"/>
-                            </muxc:Button>
-
-
                         </GridView>
 
-                        <TextBlock Grid.Row="1" FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">
+                    </ScrollViewer>
 
-                        </TextBlock>
-                    </Grid>
+                    <!--Row Grid Splitter-->
+                    <controls:GridSplitter Foreground="White" Grid.Row="3" ResizeBehavior="BasedOnAlignment"
+                    ResizeDirection="Auto" Background="Gray" Height="2" HorizontalAlignment="Stretch">
+
+                    </controls:GridSplitter>
+                    <!--Tool Settings-->
+                    <ScrollViewer Grid.Row="4" Height="100" Margin="0">
+                        <Grid Grid.Row="4">
+                            <TextBlock Grid.Row="0" FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">
+
+                            </TextBlock>
+                        </Grid>
+                    </ScrollViewer>
+
+
                 </Grid>
             </ScrollViewer>
 
 
             <!--Column Grid Splitter-->
             <controls:GridSplitter Grid.Column="3" ResizeBehavior="BasedOnAlignment"
-            ResizeDirection="Auto" Background="Gray" Foreground="White" FontSize="13" Grid.RowSpan="1"  >
-                <controls:GridSplitter.Element>
-                    <Grid>
-                        <TextBlock HorizontalAlignment="Right" IsHitTestVisible="False" VerticalAlignment="Bottom"  
-                               Text="&#xE784;" Foreground="Black" FontFamily="Segoe MDL2 Assets">
-                        </TextBlock>
-                    </Grid>
-                </controls:GridSplitter.Element>
+            ResizeDirection="Auto" Background="Gray" Foreground="White">
             </controls:GridSplitter>
 
             <!--Canvas column-->
@@ -240,7 +219,7 @@
                 <Rectangle Fill="Yellow" Canvas.Left="60" Canvas.Top="60" Canvas.ZIndex="3" />
             </Canvas>
         </Grid>
-
+        <!--Tool Bar-->
         <muxc:MenuBar Grid.Row="0">
             <muxc:MenuBarItem Title="File">
                 <MenuFlyoutItem Text="New">
@@ -258,7 +237,7 @@
                         <KeyboardAccelerator Modifiers="Control" Key="S"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Exit">
+                <MenuFlyoutItem Text="Exit" Click="Exit_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="E"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
@@ -289,9 +268,9 @@
             </muxc:MenuBarItem>
 
             <muxc:MenuBarItem Title="Help">
-                <MenuFlyoutItem Text="About">
+                <MenuFlyoutItem Text="About" Click="About_Button_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control" Key="I"/>
+                        <KeyboardAccelerator ToolTipService.ToolTip="Show an about message" Modifiers="Control" Key="I" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
             </muxc:MenuBarItem>
