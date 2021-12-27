@@ -126,24 +126,42 @@ namespace AdhesionTekPaintTool
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF408;"/>
                             </muxc:Button>
 ***/
+
+public delegate T GetItem<T>();
+
 class ToolItemGrid : Grid
 {
     private IconElement iconElement;
     private TextBlock descripution;
-    public ToolItemGrid(string iconString, string descriputionString)
+    public ToolItemGrid(string iconString, string descriputionString) : this(() =>
+        {
+            FontIcon icon = new FontIcon()
+            {
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                Glyph = iconString
+            };
+            return icon;
+        },
+        () =>
+        {
+            TextBlock descriputionText = new TextBlock()
+            {
+                Text = descriputionString
+            };
+            return descriputionText;
+        })
     {
-        FontIcon icon = new FontIcon();
-        icon.FontFamily = new FontFamily("Segoe MDL2 Assets");
-        icon.Glyph = iconString;
-
-        TextBlock descriputionText = new TextBlock();
-        descriputionText.Text = descriputionString;
-
-        SetIconAndText(icon, descriputionText);
     }
     public ToolItemGrid(IconElement icon, TextBlock descripution)
     {
         this.SetIconAndText(icon, descripution);
+    }
+
+    public ToolItemGrid(GetItem<IconElement> getIcon, GetItem<TextBlock> getText)
+    {
+        IconElement iconElement = getIcon?.Invoke();
+        TextBlock textBlock = getText?.Invoke();
+        this.SetIconAndText(iconElement, textBlock);
     }
 
 
@@ -165,8 +183,6 @@ class ToolItemGrid : Grid
         this.ColumnDefinitions.Add(descriputionColumn);
         this.SetValue(MarginProperty, new Thickness(10, 0, 10, 0));
         this.Width = 64;
-
-
 
         this.Children.Add(icon);
         this.Children.Add(descripution);
