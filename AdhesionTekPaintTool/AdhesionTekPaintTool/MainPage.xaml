@@ -10,6 +10,13 @@
       mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <CollectionViewSource x:Name="toolsButtons" IsSourceGrouped="True" 
+                              ItemsPath="Activities"/>
+    </Page.Resources>
+
+
+
     <Grid >
 
 
@@ -131,6 +138,8 @@
                 </controls:GridSplitter.Element>
             </controls:GridSplitter>
 
+
+
             <!--Tools column-->
             <ScrollViewer Grid.Column="2" Grid.ColumnSpan="1">
                 <Grid>
@@ -157,7 +166,7 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
 
-                        <GridView Grid.Row="0" >
+                        <GridView x:Name="toolsGridView" Grid.Row="0" >
                             <GridView.ItemContainerStyle>
                                 <Style TargetType="GridViewItem">
                                     <Setter Property="Margin" Value="0, 0, 0, 0"/>

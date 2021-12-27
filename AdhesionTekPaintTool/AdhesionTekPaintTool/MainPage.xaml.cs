@@ -1,4 +1,5 @@
-﻿using Windows.UI.Input.Inking;
+﻿using System.Collections.Generic;
+using Windows.UI.Input.Inking;
 using Windows.UI.Xaml.Controls;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
@@ -16,7 +17,8 @@ namespace AdhesionTekPaintTool
         {
             //this.InitializeComponent();
             this.InitializeComponent();
-
+            InkCanvas inkCanvas = new InkCanvas();
+            PopulateToolButtons();
 
             /*          inkCanvas.InkPresenter.InputDeviceTypes =
             Windows.UI.Core.CoreInputDeviceTypes.Mouse |
@@ -30,6 +32,18 @@ namespace AdhesionTekPaintTool
                       drawingAttributes.FitToCurve = true;
                       inkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
                       */
+        }
+
+        private void PopulateToolButtons()
+        {
+            List<Button> buttons = new List<Button>();
+            Button button = new Button();
+            button.FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets");
+            button.Content = "\xED63";
+            buttons.Add(button);
+            buttons.Add(new ToolButton("ED63"));
+            toolsGridView.ItemsSource = buttons;
+
         }
 
         /// <summary>
@@ -48,4 +62,22 @@ namespace AdhesionTekPaintTool
             */
         }
     }
+
+
+
+}
+class ToolButton : Button
+{
+
+    public ToolButton(string iconString)
+    {
+        if (string.IsNullOrEmpty(iconString))
+        {
+            throw new System.ArgumentException($"'{nameof(iconString)}' cannot be null or empty.", nameof(iconString));
+        }
+
+        this.FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets");
+        this.Content = "\\" + "x" + iconString;
+    }
+
 }
