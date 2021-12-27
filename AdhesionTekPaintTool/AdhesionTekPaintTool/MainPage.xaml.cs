@@ -98,35 +98,6 @@ namespace AdhesionTekPaintTool
 
 
 }
-/***
- * 
- * <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED63;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE7E6;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xED64;"/>
-                            </muxc:Button>
-
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEDFB;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE75C;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEF3C;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF407;"/>
-                            </muxc:Button>
-                            <muxc:Button Height="40" Width="40">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF408;"/>
-                            </muxc:Button>
-***/
-
 public delegate T GetItem<T>();
 
 class ToolItemGrid : Grid
