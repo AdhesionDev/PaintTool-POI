@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.UI;
+using System.Windows;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -22,10 +29,25 @@ namespace PaintTool_POI
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        #region Private Field
+
+        private Action<StorageFile> onFileReadComplete;
+
+        // private Stack<StrokeCollection> undo;
+
+        #endregion
+
         public MainPage()
         {
             this.InitializeComponent();
             AddToolItems();
+            InitiallizeColors();
+        }
+
+        public void InitiallizeColors()
+        {
+            mainColorPicker.Color = ValueHolder.penColor;
+            UpdatePenAndBackColors();
         }
 
         private void AddToolItems()
@@ -76,66 +98,76 @@ namespace PaintTool_POI
         {
 
         }
+
+        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private async void OpenFile_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Opening file");
+            //StorageFile file;
+            FileOpenPicker openPicker = new FileOpenPicker();
+            openPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+            openPicker.ViewMode = PickerViewMode.Thumbnail;
+            openPicker.FileTypeFilter.Clear();
+            openPicker.FileTypeFilter.Add(".png");
+            openPicker.FileTypeFilter.Add(".jpeg");
+            openPicker.FileTypeFilter.Add(".jpg");
+            openPicker.FileTypeFilter.Add(".bmp");
+
+            StorageFile file = await openPicker.PickSingleFileAsync();
+            if (file != null)
+            {
+                // Application now has read/write access to the picked file
+                Debug.WriteLine("Picked photo: " + file.Name);
+            }
+            else
+            {
+                Debug.WriteLine("Operation cancelled.");
+            }
+
+            onFileReadComplete?.Invoke(file);
+        }
+        private void UpdatePenAndBackColors()
+        {
+            backColorRectangle.Fill = new SolidColorBrush(ValueHolder.backColor);
+            frontColorRectangle.Fill = new SolidColorBrush(ValueHolder.penColor);
+        }
+        private void SwapColorButton_Click(object sender, RoutedEventArgs e)
+        {
+            Color back = ValueHolder.backColor;
+            ValueHolder.backColor = ValueHolder.penColor;
+            ValueHolder.penColor = back;
+            UpdatePenAndBackColors();
+        }
+
+        private void ColorPicker_ColorChanged(Microsoft.UI.Xaml.Controls.ColorPicker sender, Microsoft.UI.Xaml.Controls.ColorChangedEventArgs args)
+        {
+            ValueHolder.penColor = sender.Color;
+            UpdatePenAndBackColors();
+        }
+
+        private void MenuFlyoutItem_Click_1(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+        private void ZoomCanvas(float factor)
+        {
+            mainCanvasScrollViewer.ChangeView(0, 0, mainCanvasScrollViewer.ZoomFactor + factor);
+        }
+
+        private void ZoomInButton_Click(object sender, RoutedEventArgs e)
+        {
+            ZoomCanvas(0.4f);
+        }
+        private void ZoomOutButton_Click(object sender, RoutedEventArgs e)
+        {
+            ZoomCanvas(-0.4f);
+        }
     }
 }
 public delegate T GetItem<T>();
 
-class ToolItemGrid : Grid
-{
-    private IconElement iconElement;
-    private TextBlock descripution;
-    public ToolItemGrid(string iconString, string descriputionString) : this(() =>
-    {
-        FontIcon icon = new FontIcon()
-        {
-            FontFamily = new FontFamily("Segoe MDL2 Assets"),
-            Glyph = iconString
-        };
-        return icon;
-    },
-        () =>
-        {
-            TextBlock descriputionText = new TextBlock()
-            {
-                Text = descriputionString
-            };
-            return descriputionText;
-        })
-    {
-    }
-    public ToolItemGrid(IconElement icon, TextBlock descripution)
-    {
-        this.SetIconAndText(icon, descripution);
-    }
-
-    public ToolItemGrid(GetItem<IconElement> getIcon, GetItem<TextBlock> getText)
-    {
-        IconElement iconElement = getIcon?.Invoke();
-        TextBlock textBlock = getText?.Invoke();
-        this.SetIconAndText(iconElement, textBlock);
-    }
-
-
-    private void SetIconAndText(IconElement icon, TextBlock descripution)
-    {
-        this.iconElement = icon;
-        this.descripution = descripution;
-
-        this.iconElement.SetValue(Grid.ColumnProperty, 0);
-        this.iconElement.VerticalAlignment = VerticalAlignment.Center;
-
-        this.descripution.SetValue(Grid.ColumnProperty, 1);
-        this.descripution.TextWrapping = TextWrapping.WrapWholeWords;
-        this.descripution.FontSize = 8;
-
-        ColumnDefinition iconColumn = new ColumnDefinition();
-        this.ColumnDefinitions.Add(iconColumn);
-        ColumnDefinition descriputionColumn = new ColumnDefinition();
-        this.ColumnDefinitions.Add(descriputionColumn);
-        this.SetValue(MarginProperty, new Thickness(10, 0, 10, 0));
-        this.Width = 64;
-
-        this.Children.Add(icon);
-        this.Children.Add(descripution);
-    }
-}
