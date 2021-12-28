@@ -34,12 +34,12 @@ namespace PaintTool_POI
 
             items.Add(new ToolItemGrid("\xED63", "Pencil"));
             items.Add(new ToolItemGrid("\xE7E6", "High Light"));
-            items.Add(new ToolItemGrid("\xEDFB", "Pen"));
+            items.Add(new ToolItemGrid("\xEDFB", "Calligraphy Pen"));
             items.Add(new ToolItemGrid("\xE75C", "消しゴム"));
             items.Add(new ToolItemGrid("\xEF3C", "Color Picker"));
             items.Add(new ToolItemGrid("\xE759", "Move"));
-            items.Add(new ToolItemGrid("\xF407", "Selection"));
-            items.Add(new ToolItemGrid("\xF408", "Free Selection"));
+            items.Add(new ToolItemGrid("\xF407", "Rectangular Selecting"));
+            items.Add(new ToolItemGrid("\xF408", "Free Selecting"));
             items.Add(new ToolItemGrid("\xE710", "Add new Item"));
             toolsGridView.ItemsSource = items;
 
@@ -58,7 +58,7 @@ namespace PaintTool_POI
             ContentDialog aboutDialog = new ContentDialog()
             {
                 Title = "About",
-                Content = "Adhesion Painting Tool\n Version: Test",
+                Content = "PaintTool POI\nVersion: Test",
                 CloseButtonText = "OK"
             };
             await aboutDialog.ShowAsync();
