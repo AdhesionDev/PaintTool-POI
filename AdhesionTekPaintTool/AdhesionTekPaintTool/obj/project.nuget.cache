@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3jpJYdZcJsprTDcix9Qxos6LJf6hb1OixI7RL2l1P/oYxIl5A62tR2B6lu2y6FJgpeu3SZw1q61bL/juUYNPYw==",
+  "dgSpecHash": "cRVNeoW8RlotEIkMe5QBcdqwmq4gpc/KN8X1jgihf1cndRMQL4XBE+EA4pDgd3DtDFqqARQZMMvJitH/mPyEzw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\ADT\\Documents\\GitHub\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool.csproj",
+  "projectFilePath": "C:\\Users\\ADT\\Documents\\GitHub\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\PaintToolPoi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ADT\\.nuget\\packages\\colorcode.core\\2.0.6\\colorcode.core.2.0.6.nupkg.sha512",
     "C:\\Users\\ADT\\.nuget\\packages\\colorcode.uwp\\2.0.6\\colorcode.uwp.2.0.6.nupkg.sha512",

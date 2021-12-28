@@ -10781,9 +10781,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ADT\\Documents\\GitHub\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool.csproj",
+      "projectUniqueName": "C:\\Users\\ADT\\Documents\\GitHub\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\PaintToolPoi.csproj",
       "projectName": "AdhesionTekPaintTool",
-      "projectPath": "C:\\Users\\ADT\\Documents\\GitHub\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool.csproj",
+      "projectPath": "C:\\Users\\ADT\\Documents\\GitHub\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\PaintToolPoi.csproj",
       "packagesPath": "C:\\Users\\ADT\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\ADT\\Documents\\GitHub\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\AdhesionTekPaintTool\\obj\\",
       "projectStyle": "PackageReference",

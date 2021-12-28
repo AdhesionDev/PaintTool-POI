@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32002.261
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdhesionTekPaintTool", "AdhesionTekPaintTool\AdhesionTekPaintTool.csproj", "{166186C6-2E47-4055-BA5C-1FC746E1D79B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaintToolPoi", "AdhesionTekPaintTool\PaintToolPoi.csproj", "{166186C6-2E47-4055-BA5C-1FC746E1D79B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

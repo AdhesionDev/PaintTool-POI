@@ -1,1 +1,1 @@
-C:\Users\ADT\Documents\GitHub\AdhesionTekPaintTool\AdhesionTekPaintTool\AdhesionTekPaintTool\AdhesionTekPaintTool.csproj;x86
+C:\Users\ADT\Documents\GitHub\AdhesionTekPaintTool\AdhesionTekPaintTool\AdhesionTekPaintTool\PaintToolPoi.csproj;x86

@@ -8,7 +8,7 @@
     
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:muxc="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    >
 
     <Page.Resources>
         <CollectionViewSource x:Name="toolsButtons" IsSourceGrouped="True" 
@@ -55,7 +55,10 @@
                     </Grid.RowDefinitions>
                     <!--Preview-->
                     <Border BorderBrush="Gray" BorderThickness="2" Margin="2">
-                        <Rectangle Grid.Row="0" Fill="LightGray" Height="200" Margin="0" />
+                        <Grid MinHeight="100" Height="200"  Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+
+                        </Grid>
+
                     </Border>
                     <!--Controls-->
                     <GridView Grid.Row="1" Margin="3" HorizontalAlignment="Center">
@@ -217,12 +220,23 @@
             <!--Canvas column-->
 
             <Grid Grid.Column="4" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
-                <Canvas MinWidth="300" Width="100" Height="100" Background="Gray" x:Name="mainCanvas" Grid.Column="4">
-                    <Rectangle Fill="Red" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="0" />
-                    <Rectangle Fill="Blue" Canvas.Left="20" Canvas.Top="20" Canvas.ZIndex="1" />
-                    <Rectangle Fill="Green" Canvas.Left="40" Canvas.Top="40" Canvas.ZIndex="2" />
-                    <Rectangle Fill="Yellow" Canvas.Left="60" Canvas.Top="60" Canvas.ZIndex="3" />
-                </Canvas>
+                <muxc:ScrollViewer>
+                    <Viewbox Scale="1,1,1" >
+                        <Grid>
+                            <Canvas MinWidth="300" Width="100" Height="100"  x:Name="mainCanvas" Grid.Column="4">
+                                <Rectangle Fill="Red" Canvas.Left="0" Canvas.Top="0" Canvas.ZIndex="0" />
+                                <Rectangle Fill="Blue" Canvas.Left="20" Canvas.Top="20" Canvas.ZIndex="1" />
+                                <Rectangle Fill="Green" Canvas.Left="40" Canvas.Top="40" Canvas.ZIndex="2" />
+                                <Rectangle Fill="Yellow" Canvas.Left="60" Canvas.Top="60" Canvas.ZIndex="3" />
+                            </Canvas>
+                            <InkCanvas>
+
+                            </InkCanvas>
+
+                        </Grid>
+                    </Viewbox>
+                </muxc:ScrollViewer>
+
             </Grid>
 
 
