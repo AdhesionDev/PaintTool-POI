@@ -2,18 +2,19 @@ name: .NET
 
 on:
   push:
-    tags: 'v*'
+    branches: [ release ]
     
-env:
-  SingCertificate: .\PaintTool POI\PaintTool POI\PaintTool_POI_TemporaryKey.pfx
-  Solution_Path: .\PaintTool POI\PaintTool POI.sln
-  UWP_Project_Path: PaintTool POI.csproj
-  UWP_Project_Directory: .\PaintTool POI\PaintTool POI\
+
   
 jobs:
     
   release:
     runs-on: windows-latest
+    env:
+     SingCertificate: .\PaintTool POI\PaintTool POI\PaintTool_POI_TemporaryKey.pfx
+     Solution_Path: .\PaintTool POI\PaintTool POI.sln
+     UWP_Project_Path: PaintTool POI.csproj
+     UWP_Project_Directory: .\PaintTool POI\PaintTool POI\
     steps:
       - name: Configure Pagefile
         uses: al-cheb/config-pagefile-action-@1.2
@@ -39,7 +40,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          
+
+      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.0.0
         
