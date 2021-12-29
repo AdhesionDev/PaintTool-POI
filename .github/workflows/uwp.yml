@@ -2,8 +2,10 @@ name: .NET
 
 on:
   push:
-    tags:
-      - '*'
+    breaches: 
+      tags:
+       - '*'
+    
   
 jobs:
     
@@ -63,7 +65,7 @@ jobs:
           Configuration: Release
           
       - name: Remove the .pfx
-        run: Remove-Item -path $env:UWP_Project_Directory/%env:SigningCertificate
+        run: Remove-Item -path $env:UWP_Project_Directory/$env:SigningCertificate
         
       - name: Create archive
         run: Compress-Archive -Path C:DeployOutput\* -DestinationPath C:\DeployOutput\StorePackage_${{steps.getVersion.outputs.result}}.zip
