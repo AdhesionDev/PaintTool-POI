@@ -11,10 +11,8 @@ env:
   UWP_Project_Directory: .\PaintTool POI\PaintTool POI\
   
 jobs:
-  release:
-    runs-on: windows-latest
     
-  my_first_job:
+  release:
     runs-on: windows-latest
     steps:
       - name: Configure Pagefile
