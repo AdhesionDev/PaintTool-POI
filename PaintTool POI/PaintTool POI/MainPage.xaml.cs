@@ -86,7 +86,7 @@ namespace PaintTool_POI
         private async void UpdatePreview()
         {
             CanvasDevice device = CanvasDevice.GetSharedDevice();
-            //CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)mainInkCanvas.ActualWidth, (int)mainInkCanvas.ActualHeight, 96);
+            CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)mainInkCanvas.ActualWidth, (int)mainInkCanvas.ActualHeight, 96);
             //BitmapDecoder decoder = await BitmapDecoder.CreateAsync(renderTarget.GetPixelBytes());
 
             // make a software bitmap to decode it into
@@ -95,7 +95,6 @@ namespace PaintTool_POI
             //(int)renderTarget.GetPixelBytes,
             //(int)bitmapDecoder.PixelHeight,
             //BitmapAlphaMode.Premultiplied); ;
-
         }
 
         private void AddToolItems()
@@ -236,12 +235,12 @@ namespace PaintTool_POI
         }
         private void RotateCWButton_Click(object sender, RoutedEventArgs e)
         {
-            canvasRotation += 15;
+            canvasRotation += 10;
             UpdateCanvasViewBoxRotation();
         }
         private void RotateCCWButton_Click(object sender, RoutedEventArgs e)
         {
-            canvasRotation -= 15;
+            canvasRotation -= 10;
             UpdateCanvasViewBoxRotation();
         }
 
