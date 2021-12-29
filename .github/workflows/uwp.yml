@@ -67,11 +67,12 @@ jobs:
         run: Remove-Item -path $env:UWP_Project_Directory/%env:SigningCertificate
         
       - name: Create archive
-        run: Cp,[ress-Archive -Path C:DeployOutput\* -DestinationPath C:\DeployOutput\StorePackage_${{steps.getVersion.outputs.result}}.zip
+        run: Compress-Archive -Path C:DeployOutput\* -DestinationPath C:\DeployOutput\StorePackage_${{steps.getVersion.outputs.result}}.zip
         
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
