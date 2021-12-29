@@ -9,12 +9,16 @@ on:
 jobs:
     
   release:
+    # For a list of available runner types, refer to
+    # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
     runs-on: windows-latest
+
     env:
      SingCertificate: .\PaintTool POI\PaintTool POI\PaintTool_POI_TemporaryKey.pfx
      Solution_Path: .\PaintTool POI\PaintTool POI.sln
      UWP_Project_Path: PaintTool POI.csproj
      UWP_Project_Directory: .\PaintTool POI\PaintTool POI\
+
     steps:
       - name: Configure Pagefile
         uses: al-cheb/config-pagefile-action-@1.2
@@ -69,7 +73,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secret.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{steps.create_release.outputs.upload_url}}
           asset_path: C:\DeployOutput\StorePackage_${{steps.getVersion.outputs.result}}.zip
