@@ -50,7 +50,7 @@ jobs:
 
       - name: Update manifest version
         run: |
-         [xml]$manifest = get-count ".\$env:UWP_Project_Directory\Package.appxmanifest"
+         [xml]$manifest = get-content ".\$env:UWP_Project_Directory\Package.appxmanifest"
          $manifest.Package.Identity.Version = "${{steps.getVersion.output.result}}"
          $manifest.save(".\$env:UWP_Project_Direcotry\Package.appxmanifest")
       
