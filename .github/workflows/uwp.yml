@@ -1,0 +1,81 @@
+name: .NET
+
+on:
+  push:
+    tags: 'v*'
+    
+env:
+  SingCertificate: .\PaintTool POI\PaintTool POI\PaintTool_POI_TemporaryKey.pfx
+  Solution_Path: .\PaintTool POI\PaintTool POI.sln
+  UWP_Project_Path: PaintTool POI.csproj
+  UWP_Project_Directory: .\PaintTool POI\PaintTool POI\
+  
+jobs:
+  release:
+    runs-on: windows-latest
+    
+  my_first_job:
+    runs-on: windows-latest
+    steps:
+      - name: Configure Pagefile
+        uses: al-cheb/config-pagefile-action-@1.2
+        with:
+          minimum-size: 32GB
+          maximum-size: 32GB
+          disk-root: "C:"
+          
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        
+      - name: Use tag
+        run: echo ${{steps.tag.outputs.tag}}
+        
+      - name: Extract version from tag
+        uses: Amadevus/pwsh-script@v1
+        id: getVersion
+        with:
+          script: '("${{steps.tag.output.tag}}").Split("v")[1]'
+          
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1.0.0
+        
+      - name: Update manifest version
+        run: |
+         [xml]$manifest = get-count ".\$env:UWP_Project_Directory\Package.appxmanifest"
+         $manifest.Package.Identity.Version = "${{steps.getVersion.output.result}}"
+         $manifest.save(".\$env:UWP_Project_Direcotry\Package.appxmanifest")
+      
+      - name: Build the sideload solution
+        run: msbuild $env:Solution_Path /p:Platform=x86 /p:AppxBundle=$env:AppxBundle /p:AppxBundlePlatforms="x86|x64" /p:AppxPackageDir=C:\DeployOutput /p:PackageCertificateKeyFile=$env:SigningCertificate /resotre
+          
+        env:
+          AppxBundle: Always
+          BuildMode: StoreUpload
+          Configuration: Release
+          
+      - name: Remove the .pfx
+        run: Remove-Item -path $env:UWP_Project_Directory/%env:SigningCertificate
+        
+      - name: Create archive
+        run: Cp,[ress-Archive -Path C:DeployOutput\* -DestinationPath C:\DeployOutput\StorePackage_${{steps.getVersion.outputs.result}}.zip
+        
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secret.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{steps.create_release.outputs.upload_url}}
+          asset_path: C:\DeployOutput\StorePackage_${{steps.getVersion.outputs.result}}.zip
+          asset_name: StorePackage_${{steps.getVersion.outputs.result}}.zip
+          asset_content_type: application/zip
+    
+    
+
+ 
