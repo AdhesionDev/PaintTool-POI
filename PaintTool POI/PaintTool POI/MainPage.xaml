@@ -42,8 +42,8 @@
                     </Grid.RowDefinitions>
                     <!--Preview-->
                     <Border BorderBrush="Gray" BorderThickness="2" Margin="2">
-                        <Grid MinHeight="100" Height="200"  Background="{ThemeResource SystemControlAcrylicWindowBrush}">
-
+                        <Grid  MinHeight="100" Height="200"  Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+                            <Canvas x:Name="previewCanvas"></Canvas>
                         </Grid>
 
                     </Border>
@@ -213,14 +213,18 @@
                               x:Name="mainCanvasScrollViewer"
                               >
                     <Viewbox Height="700" Width="700" Scale="1,1,1" x:Name="mainCanvasViewBox" >
-                        <Grid Margin="100">
+                        <Grid Margin="100" x:Name="mainCanvasGrid">
                             <Grid.Resources>
                                 <Windows10version1903:ThemeShadow x:Name="SharedShadow" />
                             </Grid.Resources>
-                            <Canvas MinHeight="300" MinWidth="300" Background="White" x:Name="mainCanvas" Grid.Column="4" Margin="0">
+                            <Canvas 
+                                Height="300" Width="300" 
+                                Background="White" 
+                                x:Name="mainCanvas" 
+                                Grid.Column="4" Margin="0"
+                                >
                             </Canvas>
-                            <InkCanvas>
-                            </InkCanvas>
+                            <InkCanvas x:Name="mainInkCanvas"></InkCanvas>
                         </Grid>
                     </Viewbox>
                 </ScrollViewer>
@@ -247,6 +251,7 @@
                         <KeyboardAccelerator Modifiers="Control" Key="S"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
+                <MenuFlyoutSeparator/>
                 <MenuFlyoutItem Text="Exit" Click="Exit_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="E"/>
@@ -282,12 +287,23 @@
                 </MenuFlyoutItem>
                 <MenuFlyoutItem Text="Zoom Out" Icon="ZoomOut" Click="ZoomOutButton_Click" >
                 </MenuFlyoutItem>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Rotate CW" Icon="Rotate" Click="RotateCWButton_Click" >
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Rotate CCW" Click="RotateCCWButton_Click" >
+                </MenuFlyoutItem>
+
             </MenuBarItem>
 
             <MenuBarItem Title="Help" >
                 <MenuFlyoutItem Text="About" Click="About_Button_Click" Icon="Emoji2">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator ToolTipService.ToolTip="Show an about message" Modifiers="Control" Key="I" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Debug" Click="DebugButton_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator ToolTipService.ToolTip="Debug" Modifiers="Control" Key="D" />
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
             </MenuBarItem>

@@ -19,6 +19,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using Microsoft.Graphics.Canvas;
+using Windows.Graphics.Imaging;
+using Windows.UI.Input.Inking;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -33,6 +36,8 @@ namespace PaintTool_POI
 
         private Action<StorageFile> onFileReadComplete;
 
+        public int canvasRotation = 0;
+
         // private Stack<StrokeCollection> undo;
 
         #endregion
@@ -42,12 +47,55 @@ namespace PaintTool_POI
             this.InitializeComponent();
             AddToolItems();
             InitiallizeColors();
+            //addCanvases();
+
+
         }
+
+        private void UpdateCanvasViewBoxRotation()
+        {
+            //UIElement container = VisualTreeHelper.GetParent(mainCanvasViewBox) as UIElement;
+            //Point relativeLocation = mainCanvasViewBox.TranslatePoint(new Point(0, 0), container);
+
+            //Rotation oldRotation = mainCanvasViewBox.RotationTransition;
+            mainCanvasViewBox.RenderTransform = new RotateTransform()
+            {
+                CenterX = 350,
+                CenterY = 350,
+                Angle = canvasRotation
+            };
+        }
+
+        private void addCanvases()
+        {
+
+            InkCanvas layer1 = new InkCanvas();
+            layer1.CacheMode = new BitmapCache();
+
+            mainCanvasGrid.Children.Add(layer1);
+        }
+
+
 
         public void InitiallizeColors()
         {
             mainColorPicker.Color = ValueHolder.penColor;
             UpdatePenAndBackColors();
+        }
+
+        private async void UpdatePreview()
+        {
+            CanvasDevice device = CanvasDevice.GetSharedDevice();
+            //CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)mainInkCanvas.ActualWidth, (int)mainInkCanvas.ActualHeight, 96);
+            //BitmapDecoder decoder = await BitmapDecoder.CreateAsync(renderTarget.GetPixelBytes());
+
+            // make a software bitmap to decode it into
+            //var softwareBitmap = new SoftwareBitmap(
+            //BitmapPixelFormat.Bgra8,
+            //(int)renderTarget.GetPixelBytes,
+            //(int)bitmapDecoder.PixelHeight,
+            //BitmapAlphaMode.Premultiplied); ;
+
         }
 
         private void AddToolItems()
@@ -133,7 +181,22 @@ namespace PaintTool_POI
         {
             backColorRectangle.Fill = new SolidColorBrush(ValueHolder.backColor);
             frontColorRectangle.Fill = new SolidColorBrush(ValueHolder.penColor);
+
+            // Set supported inking device types.
+            mainInkCanvas.InkPresenter.InputDeviceTypes =
+                Windows.UI.Core.CoreInputDeviceTypes.Mouse |
+                Windows.UI.Core.CoreInputDeviceTypes.Pen;
+
+            // Set initial ink stroke attributes.
+            InkDrawingAttributes drawingAttributes = new InkDrawingAttributes();
+            drawingAttributes.Color = ValueHolder.penColor;
+            drawingAttributes.IgnorePressure = false;
+            drawingAttributes.FitToCurve = true;
+            mainInkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
         }
+
+
+
         private void SwapColorButton_Click(object sender, RoutedEventArgs e)
         {
             Color back = ValueHolder.backColor;
@@ -156,7 +219,7 @@ namespace PaintTool_POI
 
         private void ZoomCanvas(float factor)
         {
-            mainCanvasScrollViewer.ChangeView(0, 0, mainCanvasScrollViewer.ZoomFactor + factor);
+            mainCanvasScrollViewer.ChangeView(0.5, 0.5, mainCanvasScrollViewer.ZoomFactor + factor);
         }
 
         private void ZoomInButton_Click(object sender, RoutedEventArgs e)
@@ -167,6 +230,22 @@ namespace PaintTool_POI
         {
             ZoomCanvas(-0.4f);
         }
+        private void DebugButton_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Debug message!!!");
+        }
+        private void RotateCWButton_Click(object sender, RoutedEventArgs e)
+        {
+            canvasRotation += 15;
+            UpdateCanvasViewBoxRotation();
+        }
+        private void RotateCCWButton_Click(object sender, RoutedEventArgs e)
+        {
+            canvasRotation -= 15;
+            UpdateCanvasViewBoxRotation();
+        }
+
+
     }
 }
 public delegate T GetItem<T>();
