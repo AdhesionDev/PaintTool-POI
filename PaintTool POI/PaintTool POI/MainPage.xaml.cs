@@ -36,6 +36,8 @@ namespace PaintTool_POI
     {
         #region Private Field
 
+        Button button;
+
         private Action<StorageFile> onFileReadComplete;
 
         public int canvasRotation = 0;
@@ -170,9 +172,30 @@ namespace PaintTool_POI
             newCanvas.PointerPressed += InkCanvas_PointerPressed;
             newInkCanvas.InkPresenter.StrokesCollected += InkPresenter_StrokesCollected;
 
-            //newInkCanvas.RegisterPropertyChangedCallback+= 
+
+            //newInkCanvas.RegisterPropertyChangedCallback += InkCanvas_propertyChanged;
             UpdateInkCanvas(newInkCanvas);
             newCanvas.Children.Add(newInkCanvas);
+
+            button = new Button();
+            button.PointerEntered += Button_PointerEntered;
+            button.PointerMoved += Button_PointerMoved;
+            newCanvas.Children.Add(button);
+        }
+
+        private void Button_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            Point pointerPosition = Windows.UI.Core.CoreWindow.GetForCurrentThread().PointerPosition;
+            var x = e.GetCurrentPoint(button).Position.X;
+            var y = e.GetCurrentPoint(button).Position.Y;
+
+            Debug.WriteLine("Moved!!");
+            Debug.WriteLine("[ " + x + " + " + y + " ]");
+        }
+
+        private void Button_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            Debug.WriteLine("Entered!");
         }
 
         private void InkPresenter_StrokesCollected(InkPresenter sender, InkStrokesCollectedEventArgs args)
@@ -333,6 +356,11 @@ namespace PaintTool_POI
             UpdatePreview();
         }
 
+        private void mainColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+        {
+            ValueHolder.penColor = sender.Color;
+            UpdatePenAndBackColors();
+        }
     }
 }
 public delegate T GetItem<T>();
