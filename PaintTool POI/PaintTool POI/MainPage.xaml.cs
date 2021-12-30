@@ -23,6 +23,7 @@ using Microsoft.Graphics.Canvas;
 using Windows.Graphics.Imaging;
 using Windows.UI.Input.Inking;
 using Windows.Storage.Streams;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -104,6 +105,7 @@ namespace PaintTool_POI
             {
                 drawing.Clear(Colors.Transparent);
                 drawing.DrawInk(frist.InkPresenter.StrokeContainer.GetStrokes());
+                //drawing.DrawImage();
             }
 
             InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream();
@@ -163,10 +165,22 @@ namespace PaintTool_POI
             newInkCanvas.Height = newCanvas.Height;
             newInkCanvas.Width = newCanvas.Width;
             newInkCanvas.Tapped += CanvasTapped;
+            newInkCanvas.PointerPressed += InkCanvas_PointerPressed;
+            newInkCanvas.InkPresenter.UnprocessedInput.PointerPressed += InkCanvas_RawPointerPressed;
+            newCanvas.PointerPressed += InkCanvas_PointerPressed;
+            newInkCanvas.InkPresenter.StrokesCollected += InkPresenter_StrokesCollected;
 
+            //newInkCanvas.RegisterPropertyChangedCallback+= 
             UpdateInkCanvas(newInkCanvas);
             newCanvas.Children.Add(newInkCanvas);
         }
+
+        private void InkPresenter_StrokesCollected(InkPresenter sender, InkStrokesCollectedEventArgs args)
+        {
+            UpdatePreview();
+        }
+
+
 
         public void CanvasTapped(object sender, TappedRoutedEventArgs e)
         {
@@ -305,6 +319,19 @@ namespace PaintTool_POI
             UpdateCanvasViewBoxRotation();
         }
 
+        private void InkCanvas_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            UpdatePreview();
+        }
+
+        private void InkCanvas_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            UpdatePreview();
+        }
+        private void InkCanvas_RawPointerPressed(InkUnprocessedInput e, PointerEventArgs a)
+        {
+            UpdatePreview();
+        }
 
     }
 }

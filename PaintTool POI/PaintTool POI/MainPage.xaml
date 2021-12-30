@@ -221,7 +221,7 @@
                                 Margin="0"
                                 >
                             </Canvas>
-                            <InkCanvas></InkCanvas>
+                            <InkCanvas PointerReleased="InkCanvas_PointerReleased" PointerPressed="InkCanvas_PointerPressed"></InkCanvas>
                         </Grid>
                     </Viewbox>
                 </ScrollViewer>
