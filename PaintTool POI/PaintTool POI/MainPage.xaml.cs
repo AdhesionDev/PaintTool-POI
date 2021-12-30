@@ -47,7 +47,6 @@ namespace PaintTool_POI
 
         #endregion
 
-
         public int canvasRotation = 0;
 
         Button button;
@@ -161,10 +160,38 @@ namespace PaintTool_POI
 
             SoftwareBitmap softwareBitmap = new SoftwareBitmap(BitmapPixelFormat.Bgra8, 300, 300, BitmapAlphaMode.Premultiplied);
 
-            //InMemoryRandomAccessStream
-            //InMemoryRandomAccessStream
+            unsafe
+            {
+                using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+                {
+                    using (var reference = buffer.CreateReference())
+                    {
+                        byte* dataInBytes;
+                        uint capacity;
+                        ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
+
+                        // Fill-in the BGRA plane
+                        BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
+                        for (int i = 0; i < bufferLayout.Height; i++)
+                        {
+                            for (int j = 0; j < bufferLayout.Width; j++)
+                            {
+
+                                byte value = (byte)((float)j / bufferLayout.Width * 255);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] = value;
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] = value;
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 2] = value;
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 3] = (byte)255;
+                            }
+                        }
+                    }
+                }
+            }
 
 
+
+            //InMemoryRandomAccessStream
+            //InMemoryRandomAccessStream
 
             //print(writeableBitmap.PixelBuffer.ToArray()[0].ToString());
 
