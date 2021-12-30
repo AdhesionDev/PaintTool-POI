@@ -26,7 +26,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.Media;
-
+using System.Runtime.InteropServices;
 
 /// <summary>
 /// <see cref="InkCanvas"/>
@@ -35,6 +35,14 @@ using Windows.Media;
 
 namespace PaintTool_POI
 {
+    [ComImport]
+    [Guid("5B0D3235-4DBA-4D44-865E-8F1D0E4FD04D")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    unsafe interface IMemoryBufferByteAccess
+    {
+        void GetBuffer(out byte* buffer, out uint capacity);
+    }
+
     /// <summary>
     /// Main page of POI
     /// </summary>
