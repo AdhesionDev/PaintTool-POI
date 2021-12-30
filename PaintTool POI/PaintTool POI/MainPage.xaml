@@ -43,9 +43,10 @@
                     <!--Preview-->
                     <Border BorderBrush="Gray" BorderThickness="2" Margin="2">
                         <Grid  MinHeight="100" Height="200"  Background="{ThemeResource SystemControlAcrylicWindowBrush}">
-                            <Canvas x:Name="previewCanvas"></Canvas>
+                            <Canvas x:Name="previewCanvas">
+                                <Image x:Name="previewImage" Height="200" Width="191" Source="/Assets/StoreLogo.scale-150.png"></Image>
+                            </Canvas>
                         </Grid>
-
                     </Border>
                     <!--Controls-->
                     <StackPanel Grid.Row="1" Margin="10,3,10,3" >
@@ -212,19 +213,15 @@
                               ZoomMode="Enabled"
                               x:Name="mainCanvasScrollViewer"
                               >
-                    <Viewbox Height="700" Width="700" Scale="1,1,1" x:Name="mainCanvasViewBox" >
-                        <Grid Margin="100" x:Name="mainCanvasGrid">
-                            <Grid.Resources>
-                                <Windows10version1903:ThemeShadow x:Name="SharedShadow" />
-                            </Grid.Resources>
+                    <Viewbox Height="700" Width="700" x:Name="mainCanvasViewBox" >
+                        <Grid Margin="200" x:Name="mainCanvasGrid">
                             <Canvas 
                                 Height="300" Width="300" 
                                 Background="White" 
-                                x:Name="mainCanvas" 
-                                Grid.Column="4" Margin="0"
+                                Margin="0"
                                 >
                             </Canvas>
-                            <InkCanvas x:Name="mainInkCanvas"></InkCanvas>
+                            <InkCanvas></InkCanvas>
                         </Grid>
                     </Viewbox>
                 </ScrollViewer>

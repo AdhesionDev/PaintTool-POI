@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Navigation;
 using Microsoft.Graphics.Canvas;
 using Windows.Graphics.Imaging;
 using Windows.UI.Input.Inking;
+using Windows.Storage.Streams;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -49,7 +50,7 @@ namespace PaintTool_POI
             InitiallizeColors();
             //addCanvases();
 
-
+            InitializeCanvas();
         }
 
         private void UpdateCanvasViewBoxRotation()
@@ -68,11 +69,6 @@ namespace PaintTool_POI
 
         private void addCanvases()
         {
-
-            InkCanvas layer1 = new InkCanvas();
-            layer1.CacheMode = new BitmapCache();
-
-            mainCanvasGrid.Children.Add(layer1);
         }
 
 
@@ -85,18 +81,57 @@ namespace PaintTool_POI
 
         private async void UpdatePreview()
         {
+            Canvas mainCanvas = (Canvas)mainCanvasGrid.Children[0];
+            InkCanvas frist = (InkCanvas)mainCanvas.Children[0];
+
+            //await ApplicationData.Current.TemporaryFolder.CreateFileAsync("test.png", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            // StorageFile file = await StorageFile.GetFileFromPathAsync(ApplicationData.Current.TemporaryFolder.Path + "\\test.png");
+
+
+            //Debug.WriteLine(file.Path + file.Name + file.Properties);
+            // When chosen, picker returns a reference to the selected file.
+
+            // Prevent updates to the file until updates are 
+            // finalized with call to CompleteUpdatesAsync.
+            // Windows.Storage.CachedFileManager.DeferUpdates(file);
+            // Open a file stream for writing.
+
+
             CanvasDevice device = CanvasDevice.GetSharedDevice();
-            CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)mainInkCanvas.ActualWidth, (int)mainInkCanvas.ActualHeight, 96);
-            //BitmapDecoder decoder = await BitmapDecoder.CreateAsync(renderTarget.GetPixelBytes());
+            CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)frist.ActualWidth, (int)frist.ActualHeight, 96);
 
-            // make a software bitmap to decode it into
-            //var softwareBitmap = new SoftwareBitmap(
-            //BitmapPixelFormat.Bgra8,
-            //(int)renderTarget.GetPixelBytes,
-            //(int)bitmapDecoder.PixelHeight,
-            //BitmapAlphaMode.Premultiplied); ;
+            using (CanvasDrawingSession drawing = renderTarget.CreateDrawingSession())
+            {
+                drawing.Clear(Colors.Transparent);
+                drawing.DrawInk(frist.InkPresenter.StrokeContainer.GetStrokes());
+            }
+
+            InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream();
+
+
+            //IRandomAccessStream stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+
+            await renderTarget.SaveAsync(stream, CanvasBitmapFileFormat.Png);
+            await stream.FlushAsync();
+
+            //CanvasBitmapFileFormat.Jpeg, 1f
+
+            // Write the ink strokes to the output stream.
+            //using (IOutputStream outputStream = stream.GetOutputStreamAt(0))
+
+            //  await frist.InkPresenter.StrokeContainer.SaveAsync(outputStream);
+            //   await outputStream.FlushAsync();
+
+
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.DecodePixelWidth = 600; //match the target Image.Width, not shown
+            await bitmapImage.SetSourceAsync(stream);
+            previewImage.Source = bitmapImage;
+            stream.Dispose();
         }
-
+        /// <summary>
+        /// Add tool buttons into the tool box
+        /// </summary>
         private void AddToolItems()
         {
             List<ToolItemGrid> items = new List<ToolItemGrid>();
@@ -113,14 +148,31 @@ namespace PaintTool_POI
             toolsGridView.ItemsSource = items;
 
         }
-
-        /// <summary>
-        /// Call this method for some debug behavior.
-        /// </summary>
-        private void Debug_Button_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void InitializeCanvas()
         {
-            //System.Diagnostics.Debug.WriteLine($"Get singleton var: {SampleClass.Instance.sampleVar}");
+            mainCanvasGrid.Children.Clear();
+
+            Canvas newCanvas = new Canvas();
+            mainCanvasGrid.Children.Add(newCanvas);
+            newCanvas.Width = 300;
+            newCanvas.Height = 300;
+            newCanvas.Background = new SolidColorBrush(Colors.White);
+
+
+            InkCanvas newInkCanvas = new InkCanvas();
+            newInkCanvas.Height = newCanvas.Height;
+            newInkCanvas.Width = newCanvas.Width;
+            newInkCanvas.Tapped += CanvasTapped;
+
+            UpdateInkCanvas(newInkCanvas);
+            newCanvas.Children.Add(newInkCanvas);
         }
+
+        public void CanvasTapped(object sender, TappedRoutedEventArgs e)
+        {
+            UpdatePreview();
+        }
+
         private async void showAbout()
         {
 
@@ -136,20 +188,21 @@ namespace PaintTool_POI
         {
             showAbout();
         }
+        /// <summary>
+        /// Exit the program
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Windows.ApplicationModel.Core.CoreApplication.Exit();
         }
 
-        private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-
-        }
-
-        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        /// <summary>
+        /// Open a file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void OpenFile_ButtonClick(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Opening file");
@@ -171,7 +224,7 @@ namespace PaintTool_POI
             }
             else
             {
-                Debug.WriteLine("Operation cancelled.");
+                Debug.WriteLine("Operation canceled.");
             }
 
             onFileReadComplete?.Invoke(file);
@@ -182,19 +235,24 @@ namespace PaintTool_POI
             frontColorRectangle.Fill = new SolidColorBrush(ValueHolder.penColor);
 
             // Set supported inking device types.
-            mainInkCanvas.InkPresenter.InputDeviceTypes =
-                Windows.UI.Core.CoreInputDeviceTypes.Mouse |
-                Windows.UI.Core.CoreInputDeviceTypes.Pen;
-
-            // Set initial ink stroke attributes.
-            InkDrawingAttributes drawingAttributes = new InkDrawingAttributes();
-            drawingAttributes.Color = ValueHolder.penColor;
-            drawingAttributes.IgnorePressure = false;
-            drawingAttributes.FitToCurve = true;
-            mainInkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
+            Canvas mainCanvas = (Canvas)mainCanvasGrid.Children[0];
+            InkCanvas mainInkCanvas = (InkCanvas)mainCanvas.Children[0];
+            if (mainInkCanvas != null)
+            {
+                // Set initial ink stroke attributes.
+                InkDrawingAttributes drawingAttributes = new InkDrawingAttributes();
+                drawingAttributes.Color = ValueHolder.penColor;
+                drawingAttributes.IgnorePressure = false;
+                drawingAttributes.FitToCurve = true;
+                mainInkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
+                UpdateInkCanvas(mainInkCanvas);
+            }
         }
 
-
+        private void UpdateInkCanvas(InkCanvas inkCanvas)
+        {
+            inkCanvas.InkPresenter.InputDeviceTypes = Windows.UI.Core.CoreInputDeviceTypes.Mouse | Windows.UI.Core.CoreInputDeviceTypes.Pen;
+        }
 
         private void SwapColorButton_Click(object sender, RoutedEventArgs e)
         {
@@ -216,6 +274,7 @@ namespace PaintTool_POI
         }
 
 
+
         private void ZoomCanvas(float factor)
         {
             mainCanvasScrollViewer.ChangeView(0.5, 0.5, mainCanvasScrollViewer.ZoomFactor + factor);
@@ -229,9 +288,11 @@ namespace PaintTool_POI
         {
             ZoomCanvas(-0.4f);
         }
-        private void DebugButton_Click(object sender, RoutedEventArgs e)
+        private async void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Debug message!!!");
+            UpdatePreview();
+
+
         }
         private void RotateCWButton_Click(object sender, RoutedEventArgs e)
         {

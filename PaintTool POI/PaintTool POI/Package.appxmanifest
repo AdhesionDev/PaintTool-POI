@@ -67,5 +67,6 @@
   </Applications>
 
   <Capabilities>
-    <iot:Capability Name="systemManagement"/></Capabilities>
+    <iot:Capability Name="systemManagement"/>
+    <uap:Capability Name="picturesLibrary"/></Capabilities>
 </Package>
