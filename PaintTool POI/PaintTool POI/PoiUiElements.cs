@@ -75,4 +75,19 @@ namespace PaintTool_POI
             this.Children.Add(descripution);
         }
     }
+    class MainPageSub
+    {
+        public static async void ShowAbout()
+        {
+
+            ContentDialog aboutDialog = new ContentDialog()
+            {
+                Title = "About",
+                Content = "PaintTool POI\nVersion: Test",
+                CloseButtonText = "OK",
+                PrimaryButtonText = "Gua",
+            };
+            await aboutDialog.ShowAsync();
+        }
+    }
 }

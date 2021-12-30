@@ -117,13 +117,14 @@
                 <Grid Margin="5,0,15,0" >
                     <Grid.RowDefinitions>
                         <RowDefinition MinHeight="150" Height="160"/>
-                        <RowDefinition Height="3"/>
+                        <RowDefinition Height="2"/>
                         <RowDefinition MinHeight="100" Height="100" />
-                        <RowDefinition Height="3"/>
-                        <RowDefinition/>
+                        <RowDefinition Height="2"/>
+                        <RowDefinition MinHeight="100" Height="300"/>
+                        <RowDefinition MaxHeight="2"/>
+                        <RowDefinition MaxHeight="30"/>
                     </Grid.RowDefinitions>
                     <!--Color Picker-->
-
                     <Grid VerticalAlignment="Top" Grid.Row="0" MinHeight="150" Height="auto" Margin="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition></ColumnDefinition>
@@ -135,8 +136,7 @@
                                               IsHexInputVisible="False"
                                               IsColorPreviewVisible="False"
                                               ColorChanged="mainColorPicker_ColorChanged"
-                                              x:Name="mainColorPicker"
-                                              >
+                                              x:Name="mainColorPicker">
                             </ColorPicker>
                         </Viewbox>
                         <Canvas Grid.Column="1" Grid.Row="0" Margin="0,0,5,5" Height="40" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="41" >
@@ -148,7 +148,7 @@
 
                     <!--Row Grid Splitter-->
                     <controls:GridSplitter Foreground="White" Grid.Row="1" ResizeBehavior="BasedOnAlignment"
-                    ResizeDirection="Auto" Background="Gray" Height="2" HorizontalAlignment="Stretch">
+                    ResizeDirection="Auto" Background="Gray" HorizontalAlignment="Stretch">
                     </controls:GridSplitter>
                     <!--Painting Tools-->
                     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
@@ -178,22 +178,24 @@
 
                         </ScrollViewer>
                     </Grid>
-
-
                     <!--Row Grid Splitter-->
                     <controls:GridSplitter Foreground="White" Grid.Row="3" ResizeBehavior="BasedOnAlignment"
-                    ResizeDirection="Auto" Background="Gray" Height="2" HorizontalAlignment="Stretch">
+                    ResizeDirection="Auto" Background="Gray" HorizontalAlignment="Stretch">
 
                     </controls:GridSplitter>
                     <!--Tool Settings-->
-                    <ScrollViewer Grid.Row="4" Height="auto" Margin="0">
-                        <Grid Grid.Row="4">
+                    <ScrollViewer Grid.Row="4" Margin="0">
+                        <Grid Grid.Row="4" >
                             <TextBlock Grid.Row="0" FontSize="30" TextWrapping="WrapWholeWords" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.">
-
                             </TextBlock>
                         </Grid>
                     </ScrollViewer>
 
+                    <controls:GridSplitter Foreground="White" MaxHeight="3" Grid.Row="5" ResizeBehavior="BasedOnAlignment"
+                    ResizeDirection="Auto" Background="Gray" VerticalAlignment="Top" Height="6">
+                    </controls:GridSplitter >
+                    <Grid Grid.Row="4" MaxHeight="20" Background="White" Margin="0,287,0,0" Grid.RowSpan="3">
+                    </Grid>
 
                 </Grid>
             </ScrollViewer>
@@ -219,8 +221,6 @@
                                 Margin="0"
                                 >
                             </Canvas>
-
-                            <InkCanvas PointerReleased="InkCanvas_PointerReleased" PointerPressed="InkCanvas_PointerPressed"></InkCanvas>
                             <Image x:Name="mainCanvasImage" Source="/Assets/StoreLogo.scale-150.png"></Image>
                         </Grid>
                     </Viewbox>
