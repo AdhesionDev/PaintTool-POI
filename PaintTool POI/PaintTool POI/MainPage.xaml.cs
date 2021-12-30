@@ -24,6 +24,7 @@ using Windows.Graphics.Imaging;
 using Windows.UI.Input.Inking;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
+using Windows.UI.Input;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -37,6 +38,8 @@ namespace PaintTool_POI
         #region Private Field
 
         Button button;
+        InkCanvas newInkCanvas;
+        Image canvasImage;
 
         private Action<StorageFile> onFileReadComplete;
 
@@ -84,8 +87,8 @@ namespace PaintTool_POI
 
         private async void UpdatePreview()
         {
-            Canvas mainCanvas = (Canvas)mainCanvasGrid.Children[0];
-            InkCanvas frist = (InkCanvas)mainCanvas.Children[0];
+            InkCanvas frist = (InkCanvas)mainCanvasGrid.Children[1];
+            //InkCanvas frist = (InkCanvas)mainCanvas.Children[0];
 
             //await ApplicationData.Current.TemporaryFolder.CreateFileAsync("test.png", Windows.Storage.CreationCollisionOption.ReplaceExisting);
             // StorageFile file = await StorageFile.GetFileFromPathAsync(ApplicationData.Current.TemporaryFolder.Path + "\\test.png");
@@ -115,7 +118,7 @@ namespace PaintTool_POI
 
             //IRandomAccessStream stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
 
-            await renderTarget.SaveAsync(stream, CanvasBitmapFileFormat.Png);
+            await renderTarget.SaveAsync(stream, CanvasBitmapFileFormat.Gif);
             await stream.FlushAsync();
 
             //CanvasBitmapFileFormat.Jpeg, 1f
@@ -131,6 +134,8 @@ namespace PaintTool_POI
             bitmapImage.DecodePixelWidth = 600; //match the target Image.Width, not shown
             await bitmapImage.SetSourceAsync(stream);
             previewImage.Source = bitmapImage;
+            canvasImage.Source = bitmapImage;
+            newInkCanvas.Opacity = 0.1f;
             stream.Dispose();
         }
         /// <summary>
@@ -163,24 +168,60 @@ namespace PaintTool_POI
             newCanvas.Background = new SolidColorBrush(Colors.White);
 
 
-            InkCanvas newInkCanvas = new InkCanvas();
+            newInkCanvas = new InkCanvas();
             newInkCanvas.Height = newCanvas.Height;
             newInkCanvas.Width = newCanvas.Width;
             newInkCanvas.Tapped += CanvasTapped;
             newInkCanvas.PointerPressed += InkCanvas_PointerPressed;
-            newInkCanvas.InkPresenter.UnprocessedInput.PointerPressed += InkCanvas_RawPointerPressed;
+
             newCanvas.PointerPressed += InkCanvas_PointerPressed;
             newInkCanvas.InkPresenter.StrokesCollected += InkPresenter_StrokesCollected;
+
+            InkUnprocessedInput rawInput = newInkCanvas.InkPresenter.UnprocessedInput;
+            newInkCanvas.PointerMoved += NewInkCanvas_PointerMoved;
+            rawInput.PointerMoved += UnprocessedInput_PointerMoved;
+            rawInput.PointerPressed += InkCanvas_RawPointerPressed;
+            rawInput.PointerReleased += InkCanvas_RawPointerPressed;
+            rawInput.PointerHovered += InkCanvas_RawPointerPressed;
+            rawInput.PointerLost += InkCanvas_RawPointerPressed;
+            rawInput.PointerEntered += InkCanvas_RawPointerPressed;
+            rawInput.PointerExited += InkCanvas_RawPointerPressed;
+
+
+
+            newInkCanvas.InkPresenter.InputProcessingConfiguration.Mode = InkInputProcessingMode.Inking;
 
 
             //newInkCanvas.RegisterPropertyChangedCallback += InkCanvas_propertyChanged;
             UpdateInkCanvas(newInkCanvas);
-            newCanvas.Children.Add(newInkCanvas);
-
+            //newCanvas.Children.Add(newInkCanvas);
+            mainCanvasGrid.Children.Add(newInkCanvas);
             button = new Button();
             button.PointerEntered += Button_PointerEntered;
             button.PointerMoved += Button_PointerMoved;
-            newCanvas.Children.Add(button);
+
+            //canvasImage = new Image();
+            //mainCanvasGrid.Children.Add(canvasImage);
+            //newCanvas.Children.Add(button);
+        }
+
+        private void NewInkCanvas_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            var x = e.GetCurrentPoint(newInkCanvas).Position.X;
+            var y = e.GetCurrentPoint(newInkCanvas).Position.Y;
+
+            Debug.WriteLine("Moved!!");
+            Debug.WriteLine("[ " + x + " + " + y + " ]");
+        }
+
+        private void UnprocessedInput_PointerMoved(InkUnprocessedInput sender, PointerEventArgs args)
+        {
+            Point currentPoint = args.CurrentPoint.Position;
+            var x = currentPoint.X;
+            var y = currentPoint.Y;
+
+            Debug.WriteLine("Moved!!");
+            Debug.WriteLine("[ " + x + " + " + y + " ]");
         }
 
         private void Button_PointerMoved(object sender, PointerRoutedEventArgs e)

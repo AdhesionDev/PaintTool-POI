@@ -219,7 +219,9 @@
                                 Margin="0"
                                 >
                             </Canvas>
+
                             <InkCanvas PointerReleased="InkCanvas_PointerReleased" PointerPressed="InkCanvas_PointerPressed"></InkCanvas>
+                            <Image x:Name="mainCanvasImage" Source="/Assets/StoreLogo.scale-150.png"></Image>
                         </Grid>
                     </Viewbox>
                 </ScrollViewer>
