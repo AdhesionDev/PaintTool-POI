@@ -27,6 +27,8 @@ using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.Media;
 using System.Runtime.InteropServices;
+using Microsoft.Graphics.Canvas.UI.Xaml;
+using Windows.UI.Xaml.Shapes;
 
 /// <summary>
 /// <see cref="InkCanvas"/>
@@ -42,6 +44,8 @@ namespace PaintTool_POI
     {
         void GetBuffer(out byte* buffer, out uint capacity);
     }
+
+
 
     /// <summary>
     /// Main page of POI
@@ -59,10 +63,11 @@ namespace PaintTool_POI
 
         Button button;
         InkCanvas newInkCanvas;
-        Image canvasImage = new Image();
-
+        Windows.UI.Xaml.Controls.Image canvasImage = new Windows.UI.Xaml.Controls.Image();
+        PixelImage pixelImage;
 
         WriteableBitmap writeableBitmap;
+
 
         public MainPage()
         {
@@ -119,7 +124,8 @@ namespace PaintTool_POI
             bitmapImage.DecodePixelWidth = 300; //match the target Image.Width, not shown
             await bitmapImage.SetSourceAsync(stream);
             previewImage.Source = bitmapImage;
-            newInkCanvas.Opacity = 0.1f;
+
+            //newInkCanvas.Opacity = 0.1f;
             stream.Dispose();
         }
 
@@ -144,66 +150,78 @@ namespace PaintTool_POI
         }
         private void InitializeCanvas()
         {
-            mainCanvasGrid.Children.Clear();
 
-            Canvas newCanvas = new Canvas();
-            mainCanvasGrid.Children.Add(newCanvas);
-            newCanvas.Width = 300;
-            newCanvas.Height = 300;
-            newCanvas.Background = new SolidColorBrush(Colors.White);
+
+            //mainCanvasGrid.Children.Clear();
+
+            //Canvas newCanvas = new Canvas();
+            //mainCanvasGrid.Children.Add(newCanvas);
+            //newCanvas.Width = 300;
+            //newCanvas.Height = 300;
+            //newCanvas.Background = new SolidColorBrush(Colors.White);
 
             newInkCanvas = new InkCanvas();
-            newInkCanvas.Height = newCanvas.Height;
-            newInkCanvas.Width = newCanvas.Width;
+            newInkCanvas.Height = 300;
+            newInkCanvas.Width = 300;
             newInkCanvas.Opacity = 0.2;
             newInkCanvas.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
             newInkCanvas.InkPresenter.StrokeInput.StrokeContinued += StrokeInput_StrokeContinuedAsync;
-            newCanvas.Children.Add(newInkCanvas);
 
 
-            writeableBitmap = new WriteableBitmap(300, 300);
-            canvasImage.Source = writeableBitmap;
-            canvasImage.Stretch = Stretch.None;
+            pixelImage = new PixelImage(300, 300);
 
-
-            SoftwareBitmap softwareBitmap = new SoftwareBitmap(BitmapPixelFormat.Bgra8, 300, 300, BitmapAlphaMode.Premultiplied);
-
-            unsafe
+            for (int x = 0; x < pixelImage.Width; x++)
             {
-                using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+                for (int y = 0; y < pixelImage.Height; y++)
                 {
-                    using (var reference = buffer.CreateReference())
-                    {
-                        byte* dataInBytes;
-                        uint capacity;
-                        ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
-
-                        // Fill-in the BGRA plane
-                        BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
-                        for (int i = 0; i < bufferLayout.Height; i++)
-                        {
-                            for (int j = 0; j < bufferLayout.Width; j++)
-                            {
-
-                                byte value = (byte)((float)j / bufferLayout.Width * 255);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] = value;
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] = value;
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 2] = value;
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 3] = (byte)255;
-                            }
-                        }
-                    }
+                    pixelImage.SetPixel(x, y, Colors.Black);
                 }
             }
 
+            PixelImageBrush pixelImageBrush = new PixelImageBrush()
+            {
+                Source = pixelImage,
+            };
+            canvasAsGrid.Background = pixelImageBrush;
 
-
-            //InMemoryRandomAccessStream
-            //InMemoryRandomAccessStream
-
-            //print(writeableBitmap.PixelBuffer.ToArray()[0].ToString());
-
+            mainCanvasGrid.Children.Add(newInkCanvas);
         }
+
+        public unsafe void changeSoftware(SoftwareBitmap softwareBitmap)
+        {
+            using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+            {
+                using (var reference = buffer.CreateReference())
+                {
+                    byte* dataInBytes;
+                    uint capacity;
+                    ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
+                    // Fill-in the BGRA plane
+                    BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
+                    for (int i = 0; i < bufferLayout.Height; i++)
+                    {
+                        for (int j = 0; j < bufferLayout.Width; j++)
+                        {
+                            byte value = (byte)((float)j / bufferLayout.Width * 255);
+                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] = value;
+                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] = value;
+                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 2] = value;
+                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 3] = (byte)255;
+                        }
+                    }
+                    //byte b = dataInBytes[0, 0, 0];
+                    //b += 10;
+                }
+            }
+        }
+
+        //public unsafe int getColor(byte* pointer, int height, int x, int y, int color)
+        //{
+        //
+        //    byte* buffer = byte[length][height];
+        //     byte* color = &colorStartByte;
+        // }
+
         public void CanvasTapped(object sender, TappedRoutedEventArgs e)
         {
             UpdatePreview();
@@ -274,22 +292,22 @@ namespace PaintTool_POI
             frontColorRectangle.Fill = new SolidColorBrush(ValueHolder.penColor);
 
             // Set supported inking device types.
-            Canvas mainCanvas = (Canvas)mainCanvasGrid.Children[0];
-            InkCanvas mainInkCanvas = (InkCanvas)mainCanvas.Children[0];
-            if (mainInkCanvas != null)
+            //Canvas mainCanvas = (Canvas)mainCanvasGrid.Children[0];
+            //InkCanvas mainInkCanvas = (InkCanvas)mainCanvas.Children[0];
+            if (newInkCanvas != null)
             {
                 // Set initial ink stroke attributes.
                 InkDrawingAttributes drawingAttributes = new InkDrawingAttributes();
                 drawingAttributes.Color = ValueHolder.penColor;
                 drawingAttributes.IgnorePressure = false;
                 drawingAttributes.FitToCurve = true;
-                mainInkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
+                newInkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
                 //UpdateInkCanvas(mainInkCanvas);
             }
         }
         private void SwapColorButton_Click(object sender, RoutedEventArgs e)
         {
-            Color back = ValueHolder.backColor;
+            Windows.UI.Color back = ValueHolder.backColor;
             ValueHolder.backColor = ValueHolder.penColor;
             ValueHolder.penColor = back;
             UpdatePenAndBackColors();
@@ -323,17 +341,17 @@ namespace PaintTool_POI
             //IReadOnlyList<InkStroke> inkStrokes = sender.InkPresenter.StrokeContainer.GetStrokes();
             //print(inks[inks.Count - 1].GetInkPoints()[inks[inks.Count - 1].GetInkPoints().Count - 1].Pressure.ToString());
             //IReadOnlyList<InkPoint> inkPoints = inkStrokes[inkStrokes.Count - 1].GetInkPoints();
+            //mainCanvasControl.D
 
-
-            Point point = args.CurrentPoint.Position;
+            Windows.Foundation.Point point = args.CurrentPoint.Position;
             //sender.InkPresenter.UnprocessedInput.PointerMoved += UnprocessedInput_PointerMoved2;
             //sender.InkPresenter.StrokeContainer.GetStrokes
             float pressure = args.CurrentPoint.Properties.Pressure;
 
-            DataReader dataReader = DataReader.FromBuffer(writeableBitmap.PixelBuffer);
+            //DataReader dataReader = DataReader.FromBuffer(writeableBitmap.PixelBuffer);
             print("Pen: [" + point.ToString() + "]" + "| Pressure: " + pressure.ToString());
 
-
+            pixelImage.SetPixel((int)point.X, (int)point.Y, Colors.White);
         }
 
         private void print(string m)
@@ -355,6 +373,24 @@ namespace PaintTool_POI
         {
             ValueHolder.penColor = sender.Color;
             UpdatePenAndBackColors();
+        }
+
+        private void CanvasControl_Draw(CanvasControl sender, CanvasDrawEventArgs args)
+        {
+            args.DrawingSession.Antialiasing = CanvasAntialiasing.Aliased;
+            args.DrawingSession.DrawEllipse(155, 115, 80, 30, Colors.Black, 3);
+            args.DrawingSession.DrawText("Hello, world!", 100, 100, Colors.Yellow);
+            print("LOL");
+        }
+
+        private void mainCanvasControl_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+
+        }
+
+        private void CanvasControl_Draw_1(CanvasControl sender, CanvasDrawEventArgs args)
+        {
+
         }
     }
 }

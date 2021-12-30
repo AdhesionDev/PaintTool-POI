@@ -1,43 +1,13 @@
-﻿using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Composition;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Graphics.DirectX;
-using Windows.Storage.Streams;
-using Windows.UI;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
-namespace PaintTool_POI
+namespace PixelImage
 {
-    class FileOpener
-    {
-        public static async Task<Windows.Storage.StorageFile> GetAFileAsync()
-        {
-            var picker = new Windows.Storage.Pickers.FileOpenPicker();
-            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
-            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
-            picker.FileTypeFilter.Add(".jpg");
-            picker.FileTypeFilter.Add(".jpeg");
-            picker.FileTypeFilter.Add(".png");
-
-            Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
-            return file;
-        }
-    }
-
     /// <summary>
     /// A BGRA pixel.
     /// </summary>
@@ -109,21 +79,6 @@ namespace PaintTool_POI
         }
 
         /// <summary>
-        /// Set an image pixel.
-        /// </summary>
-        public void SetPixel(int x, int y, Color pixel)
-        {
-            var offset = (x + y * Width) * bytesPerPixel;
-
-            Pixels[offset + 0] = pixel.B;
-            Pixels[offset + 1] = pixel.G;
-            Pixels[offset + 2] = pixel.R;
-            Pixels[offset + 3] = pixel.A;
-
-            ImageModified?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
         /// Get an image pixel.
         /// </summary>
         public Pixel GetPixel(int x, int y)
@@ -151,7 +106,7 @@ namespace PaintTool_POI
 
             while (sh > 0)
             {
-                System.Buffer.BlockCopy(source, srcOffset, Pixels, dstOffset, srcBytesPerRow);
+                Buffer.BlockCopy(source, srcOffset, Pixels, dstOffset, srcBytesPerRow);
                 srcOffset += srcBytesPerRow;
                 dstOffset += dstBytesPerRow;
                 --sh;
