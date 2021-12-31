@@ -1,26 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
-namespace PaintTool_POI
+namespace PaintTool_POI.UIElements
 {
-    class ToolItemGrid : Grid
+    public delegate T GetItem<T>();
+    public class PaintToolItemGrid : Grid
     {
         private IconElement iconElement;
         private TextBlock descripution;
-        public ToolItemGrid(string iconString, string descriputionString) : this(() =>
+        public PaintToolItemGrid(string iconString, string descriputionString) : this(() =>
         {
             FontIcon icon = new FontIcon()
             {
@@ -39,12 +33,12 @@ namespace PaintTool_POI
             })
         {
         }
-        public ToolItemGrid(IconElement icon, TextBlock descripution)
+        public PaintToolItemGrid(IconElement icon, TextBlock descripution)
         {
             this.SetIconAndText(icon, descripution);
         }
 
-        public ToolItemGrid(GetItem<IconElement> getIcon, GetItem<TextBlock> getText)
+        public PaintToolItemGrid(GetItem<IconElement> getIcon, GetItem<TextBlock> getText)
         {
             IconElement iconElement = getIcon?.Invoke();
             TextBlock textBlock = getText?.Invoke();
@@ -73,21 +67,6 @@ namespace PaintTool_POI
 
             this.Children.Add(icon);
             this.Children.Add(descripution);
-        }
-    }
-    class MainPageSub
-    {
-        public static async void ShowAbout()
-        {
-
-            ContentDialog aboutDialog = new ContentDialog()
-            {
-                Title = "About",
-                Content = "PaintTool POI\nVersion: Test",
-                CloseButtonText = "OK",
-                PrimaryButtonText = "Gua",
-            };
-            await aboutDialog.ShowAsync();
         }
     }
 }

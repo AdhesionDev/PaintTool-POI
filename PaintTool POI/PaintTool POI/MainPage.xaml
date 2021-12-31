@@ -42,7 +42,10 @@
                     <Border BorderBrush="Gray" BorderThickness="2" Margin="2">
                         <Grid  MinHeight="100" Height="200"  Background="{ThemeResource SystemControlAcrylicWindowBrush}">
                             <Canvas x:Name="previewCanvas">
-                                <Image x:Name="previewImage" Height="200" Width="191" Source="/Assets/StoreLogo.scale-150.png"></Image>
+                                <Viewbox MaxWidth="200" MaxHeight="200" Stretch="Fill">
+                                    <Rectangle Height="2000" Width="2000" Fill="AliceBlue" x:Name="previewRectangle"></Rectangle>
+                                </Viewbox>
+
                             </Canvas>
                         </Grid>
                     </Border>
@@ -210,15 +213,17 @@
             <Grid Grid.Column="4" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" 
                               VerticalScrollBarVisibility="Auto"
+                              PointerEntered="mainCanvasScrollViewer_PointerEntered"
+                              PointerMoved="mainCanvasScrollViewer_PointerMoved"
+                              PointerPressed="mainCanvasScrollViewer_PointerPressed"
+PointerCaptureLost="mainCanvasScrollViewer_PointerCaptureLost"
+                              PointerCanceled="mainCanvasScrollViewer_PointerCanceled"
                               ZoomMode="Enabled"
                               x:Name="mainCanvasScrollViewer"
                               >
                     <Viewbox Height="700" Width="700" x:Name="mainCanvasViewBox" >
                         <Grid Margin="200" Width="300" Height="300" x:Name="mainCanvasGrid" Background="AliceBlue">
-                            <Grid x:Name="canvasAsGrid" Width="300" Height="300">
-                                <canvas:CanvasControl Draw="CanvasControl_Draw_1">
-                                </canvas:CanvasControl >
-                            </Grid>
+
                         </Grid>
                     </Viewbox>
                 </ScrollViewer>

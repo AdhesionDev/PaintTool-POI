@@ -129,12 +129,26 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataTypes\FileOpener.cs" />
+    <Compile Include="DataTypes\PixelImageBrush.cs" />
+    <Compile Include="DataTypes\PixelImage.cs" />
+    <Compile Include="DataTypes\PoiCanvas.cs" />
+    <Compile Include="PaintTools\BasicPen.cs" />
+    <Compile Include="PaintTools\ColorTypes.cs" />
+    <Compile Include="PaintTools\Helpers\DrawCircle.cs" />
+    <Compile Include="PaintTools\Helpers\DrawLine.cs" />
+    <Compile Include="UnusedCodes\ForTest.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BasicFiles.cs" />
-    <Compile Include="PoiUiElements.cs" />
+    <Compile Include="PaintTools\BasicPencil.cs" />
+    <Compile Include="PaintTools\IColorTool.cs" />
+    <Compile Include="PaintTools\IPaintTool.cs" />
+    <Compile Include="PaintTools\IPaintToolWithUI.cs" />
+    <Compile Include="UIElements\AboutPopup.cs" />
+    <Compile Include="UIElements\PaintToolItemGrid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnusedCodes\LegacyCodes.cs" />
     <Compile Include="ValueHolder.cs" />
   </ItemGroup>
   <ItemGroup>

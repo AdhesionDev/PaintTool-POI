@@ -1,52 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI;
-using System.Windows;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
-using Microsoft.Graphics.Canvas;
-using Windows.Graphics.Imaging;
 using Windows.UI.Input.Inking;
-using Windows.Storage.Streams;
 using Windows.UI.Core;
+using PaintTool_POI.DataTypes;
+using PaintTool_POI.PaintTools;
+using Microsoft.Graphics.Canvas;
 using Windows.UI.Input;
-using Windows.Media;
-using System.Runtime.InteropServices;
-using Microsoft.Graphics.Canvas.UI.Xaml;
-using Windows.UI.Xaml.Shapes;
-
-/// <summary>
-/// <see cref="InkCanvas"/>
-/// </summary>
-
+using Windows.UI.Xaml.Input;
 
 namespace PaintTool_POI
 {
-    [ComImport]
-    [Guid("5B0D3235-4DBA-4D44-865E-8F1D0E4FD04D")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    unsafe interface IMemoryBufferByteAccess
-    {
-        void GetBuffer(out byte* buffer, out uint capacity);
-    }
-
-
-
     /// <summary>
     /// Main page of POI
     /// </summary>
@@ -54,31 +25,104 @@ namespace PaintTool_POI
     {
         #region Private Field
 
-        private readonly Action<StorageFile> OnFileReadComplete;
+        PaintTools.IPaintTool currentTool;
+        PoiCanvas canvas;
 
 
         #endregion
 
         public int canvasRotation = 0;
 
-        Button button;
-        InkCanvas newInkCanvas;
-        Windows.UI.Xaml.Controls.Image canvasImage = new Windows.UI.Xaml.Controls.Image();
+        //InkCanvas newInkCanvas;
         PixelImage pixelImage;
-
-        WriteableBitmap writeableBitmap;
-
-
         public MainPage()
         {
             this.InitializeComponent();
 
-            InitializeCanvas();
+
+            //this.inkSync = this.mainInkCanvas.InkPresenter.ActivateCustomDrying();
+            //this.mainInkCanvas.InkPresenter.StrokesCollected += InkPresenter_StrokesCollected1; ;
+            //this.canvasControl.SizeChanged += OnCanvasControlSizeChanged;
+            mainCanvasGrid.PointerEntered += MainCanvasGrid_PointerEntered;
+            mainCanvasGrid.PointerReleased += MainCanvasGrid_PointerReleased;
+            mainCanvasGrid.PointerPressed += MainCanvasGrid_PointerPressed;
+
+
+            InitializeCanvas(4000, 4000);
             AddToolItems();
             InitiallizeColors();
-            //addCanvases();
-
+            InitiallizeTools();
         }
+
+        private void MainCanvasGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            print("Pressed");
+            mainCanvasGrid.PointerMoved += MainCanvasGrid_PointerMoved;
+            PointerPoint pointerPoint = e.GetCurrentPoint(mainCanvasGrid);
+            Windows.Foundation.Point point = pointerPoint.Position;
+            float pressure = pointerPoint.Properties.Pressure;
+            currentTool.OnPenDown(point, pressure, canvas.GetLayerImage(0));
+            canvas.GetLayerBrush(0).UpdateBrush();
+            //e.Handled = true;
+        }
+
+        private void MainCanvasGrid_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            //mainCanvasGrid.PointerMoved += MainCanvasGrid_PointerMoved;
+            //e.Handled = true;
+        }
+
+        private void MainCanvasGrid_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            mainCanvasGrid.PointerMoved -= MainCanvasGrid_PointerMoved;
+            UpdatePreview();
+            PointerPoint pointerPoint = e.GetCurrentPoint(mainCanvasGrid);
+            Windows.Foundation.Point point = pointerPoint.Position;
+            float pressure = pointerPoint.Properties.Pressure;
+            currentTool.OnPenUp(point, pressure, canvas.GetLayerImage(0));
+            canvas.GetLayerBrush(0).UpdateBrush();
+            //e.Handled = true;
+        }
+
+
+        private void UpdatePreview()
+        {
+            PixelImage pixel = new PixelImage((int)canvas.Height, (int)canvas.Width);
+            pixel.Pixels = canvas.GetLayerImage(0).Pixels;
+            previewRectangle.Fill = new PixelImageBrush(pixel);
+        }
+
+        private void MainCanvasGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+
+            //print("[ " + intI + " ]");
+            //intI++;
+
+            PointerPoint pointerPoint = e.GetCurrentPoint(mainCanvasGrid);
+            Windows.Foundation.Point point = pointerPoint.Position;
+            float pressure = pointerPoint.Properties.Pressure;
+            if (pressure == 0 || (pointerPoint.PointerDevice.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Mouse && !pointerPoint.Properties.IsLeftButtonPressed))
+            {
+                //print("No pressure!");
+                return;
+            }
+
+            //print(pointerPoint.PointerDevice.PointerDeviceType.ToString() + ": [" + point.ToString() + "]" + "| Pressure: " + pressure.ToString());
+
+            //print("Point: " + point.ToString());
+            currentTool.OnPaint(point, pressure, canvas.GetLayerImage(0));
+            canvas.GetLayerBrush(0).UpdateBrush();
+            //print("Paint");
+            //newInkCanvas.InkPresenter.StrokeContainer.Clear();
+            //e.Handled = true;
+        }
+
+        private void InitiallizeTools()
+        {
+            this.currentTool = new BasicPen(ValueHolder.penColor);
+            currentTool.OnSelect();
+        }
+
         /// <summary>
         /// Change the rotation of the canvas
         /// </summary>
@@ -100,151 +144,34 @@ namespace PaintTool_POI
         }
 
         /// <summary>
-        /// Update preview image
-        /// </summary>
-        private async void UpdatePreview()
-        {
-
-            CanvasDevice device = CanvasDevice.GetSharedDevice();
-            CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)newInkCanvas.ActualWidth, (int)newInkCanvas.ActualHeight, 96);
-
-            using (CanvasDrawingSession drawing = renderTarget.CreateDrawingSession())
-            {
-                drawing.Clear(Colors.Transparent);
-                drawing.DrawInk(newInkCanvas.InkPresenter.StrokeContainer.GetStrokes());
-                //drawing.DrawImage();
-            }
-
-            InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream();
-
-            await renderTarget.SaveAsync(stream, CanvasBitmapFileFormat.Gif);
-            await stream.FlushAsync();
-
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.DecodePixelWidth = 300; //match the target Image.Width, not shown
-            await bitmapImage.SetSourceAsync(stream);
-            previewImage.Source = bitmapImage;
-
-            //newInkCanvas.Opacity = 0.1f;
-            stream.Dispose();
-        }
-
-        /// <summary>
         /// Add tool buttons into the tool box
         /// </summary>
         private void AddToolItems()
         {
-            List<ToolItemGrid> items = new List<ToolItemGrid>();
+            List<UIElement> items = new List<UIElement>();
 
-            items.Add(new ToolItemGrid("\xED63", "Pencil"));
-            items.Add(new ToolItemGrid("\xE7E6", "High Light"));
-            items.Add(new ToolItemGrid("\xEDFB", "Calligraphy Pen"));
-            items.Add(new ToolItemGrid("\xE75C", "消しゴム"));
-            items.Add(new ToolItemGrid("\xEF3C", "Color Picker"));
-            items.Add(new ToolItemGrid("\xE759", "Move"));
-            items.Add(new ToolItemGrid("\xF407", "Rectangular Selecting"));
-            items.Add(new ToolItemGrid("\xF408", "Free Selecting"));
-            items.Add(new ToolItemGrid("\xE710", "Add new Item"));
+
             toolsGridView.ItemsSource = items;
-
         }
-        private void InitializeCanvas()
+        private void InitializeCanvas(int x, int y)
         {
+            pixelImage = new PixelImage(x, y);
+            mainCanvasGrid.Width = pixelImage.Width;
+            mainCanvasGrid.Height = pixelImage.Height;
+            //mainCanvasGrid.CanDrag = true;
+            canvas = new PoiCanvas(x, y);
 
 
-            //mainCanvasGrid.Children.Clear();
-
-            //Canvas newCanvas = new Canvas();
-            //mainCanvasGrid.Children.Add(newCanvas);
-            //newCanvas.Width = 300;
-            //newCanvas.Height = 300;
-            //newCanvas.Background = new SolidColorBrush(Colors.White);
-
-            newInkCanvas = new InkCanvas();
-            newInkCanvas.Height = 300;
-            newInkCanvas.Width = 300;
-            newInkCanvas.Opacity = 0.2;
-            newInkCanvas.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
-            newInkCanvas.InkPresenter.StrokeInput.StrokeContinued += StrokeInput_StrokeContinuedAsync;
-
-
-            pixelImage = new PixelImage(300, 300);
-
-            for (int x = 0; x < pixelImage.Width; x++)
-            {
-                for (int y = 0; y < pixelImage.Height; y++)
-                {
-                    pixelImage.SetPixel(x, y, Colors.Black);
-                }
-            }
-
-            PixelImageBrush pixelImageBrush = new PixelImageBrush()
-            {
-                Source = pixelImage,
-            };
-            canvasAsGrid.Background = pixelImageBrush;
-
-            mainCanvasGrid.Children.Add(newInkCanvas);
-        }
-
-        public unsafe void changeSoftware(SoftwareBitmap softwareBitmap)
-        {
-            using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
-            {
-                using (var reference = buffer.CreateReference())
-                {
-                    byte* dataInBytes;
-                    uint capacity;
-                    ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
-                    // Fill-in the BGRA plane
-                    BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
-                    for (int i = 0; i < bufferLayout.Height; i++)
-                    {
-                        for (int j = 0; j < bufferLayout.Width; j++)
-                        {
-                            byte value = (byte)((float)j / bufferLayout.Width * 255);
-                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] = value;
-                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] = value;
-                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 2] = value;
-                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 3] = (byte)255;
-                        }
-                    }
-                    //byte b = dataInBytes[0, 0, 0];
-                    //b += 10;
-                }
-            }
-        }
-
-        //public unsafe int getColor(byte* pointer, int height, int x, int y, int color)
-        //{
-        //
-        //    byte* buffer = byte[length][height];
-        //     byte* color = &colorStartByte;
-        // }
-
-        public void CanvasTapped(object sender, TappedRoutedEventArgs e)
-        {
-            UpdatePreview();
-        }
-
-
-        private async void AboutDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            MediaElement element = new MediaElement()
-            {
-                Source = new Uri("ms-appx:///Assets/Output.mp3")
-            };
-            //var folder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Asset");
-            //var file = await folder.GetFileAsync("MySound.wav");
-            //var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-            //element.SetSource(stream, "");
-            element.Play();
+            canvas.AddLayer(pixelImage);
+            mainCanvasGrid.Children.Add(canvas);
+            previewRectangle.Fill = canvas.GetLayerBrush(0);
         }
 
         private void About_Button_Click(object sender, RoutedEventArgs e)
         {
-            MainPageSub.ShowAbout();
+            UIElements.AboutPopup.ShowAbout();
         }
+
         /// <summary>
         /// Exit the program
         /// </summary>
@@ -283,31 +210,21 @@ namespace PaintTool_POI
             {
                 print("Operation canceled.");
             }
-
-            OnFileReadComplete?.Invoke(file);
+            //OnFileReadComplete?.Invoke(file);
         }
         private void UpdatePenAndBackColors()
         {
             backColorRectangle.Fill = new SolidColorBrush(ValueHolder.backColor);
             frontColorRectangle.Fill = new SolidColorBrush(ValueHolder.penColor);
-
-            // Set supported inking device types.
-            //Canvas mainCanvas = (Canvas)mainCanvasGrid.Children[0];
-            //InkCanvas mainInkCanvas = (InkCanvas)mainCanvas.Children[0];
-            if (newInkCanvas != null)
+            if (currentTool != null)
             {
-                // Set initial ink stroke attributes.
-                InkDrawingAttributes drawingAttributes = new InkDrawingAttributes();
-                drawingAttributes.Color = ValueHolder.penColor;
-                drawingAttributes.IgnorePressure = false;
-                drawingAttributes.FitToCurve = true;
-                newInkCanvas.InkPresenter.UpdateDefaultDrawingAttributes(drawingAttributes);
-                //UpdateInkCanvas(mainInkCanvas);
+                currentTool.penColor = ValueHolder.penColor;
+                currentTool.backColor = ValueHolder.backColor;
             }
         }
         private void SwapColorButton_Click(object sender, RoutedEventArgs e)
         {
-            Windows.UI.Color back = ValueHolder.backColor;
+            Color back = ValueHolder.backColor;
             ValueHolder.backColor = ValueHolder.penColor;
             ValueHolder.penColor = back;
             UpdatePenAndBackColors();
@@ -328,36 +245,9 @@ namespace PaintTool_POI
         }
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            InkCanvas debugCanvas = new InkCanvas();
-            Canvas canvas = (Canvas)mainCanvasGrid.Children[0];
-            Canvas.SetZIndex(canvas, -1);
-            canvas.Children.Add(debugCanvas);
-            InkCanvas inkCanvas = (InkCanvas)canvas.Children[0];
 
         }
-        private async void StrokeInput_StrokeContinuedAsync(InkStrokeInput sender, PointerEventArgs args)
-        {
-            //print(sender.InkPresenter.UnprocessedInput.ToString());
-            //IReadOnlyList<InkStroke> inkStrokes = sender.InkPresenter.StrokeContainer.GetStrokes();
-            //print(inks[inks.Count - 1].GetInkPoints()[inks[inks.Count - 1].GetInkPoints().Count - 1].Pressure.ToString());
-            //IReadOnlyList<InkPoint> inkPoints = inkStrokes[inkStrokes.Count - 1].GetInkPoints();
-            //mainCanvasControl.D
 
-            Windows.Foundation.Point point = args.CurrentPoint.Position;
-            //sender.InkPresenter.UnprocessedInput.PointerMoved += UnprocessedInput_PointerMoved2;
-            //sender.InkPresenter.StrokeContainer.GetStrokes
-            float pressure = args.CurrentPoint.Properties.Pressure;
-
-            //DataReader dataReader = DataReader.FromBuffer(writeableBitmap.PixelBuffer);
-            print("Pen: [" + point.ToString() + "]" + "| Pressure: " + pressure.ToString());
-
-            pixelImage.SetPixel((int)point.X, (int)point.Y, Colors.White);
-        }
-
-        private void print(string m)
-        {
-            Debug.WriteLine(m);
-        }
 
         private void RotateCWButton_Click(object sender, RoutedEventArgs e)
         {
@@ -375,27 +265,54 @@ namespace PaintTool_POI
             UpdatePenAndBackColors();
         }
 
-        private void CanvasControl_Draw(CanvasControl sender, CanvasDrawEventArgs args)
+        private void print(string m)
         {
-            args.DrawingSession.Antialiasing = CanvasAntialiasing.Aliased;
-            args.DrawingSession.DrawEllipse(155, 115, 80, 30, Colors.Black, 3);
-            args.DrawingSession.DrawText("Hello, world!", 100, 100, Colors.Yellow);
-            print("LOL");
+            Debug.WriteLine(m);
         }
 
-        private void mainCanvasControl_PointerMoved(object sender, PointerRoutedEventArgs e)
+        private void mainCanvasScrollViewer_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-
+            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Pen)
+            {
+                //print("Disabled");
+                //(mainCanvasScrollViewer.Content as UIElement).ManipulationMode = ManipulationModes.None;
+                //e.Handled = false;
+            }
         }
 
-        private void CanvasControl_Draw_1(CanvasControl sender, CanvasDrawEventArgs args)
+        private void mainCanvasScrollViewer_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
+            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Pen)
+            {
+                //print("Move");
+                //(mainCanvasScrollViewer.Content as UIElement).ManipulationMode = ManipulationModes.None;
+                //e.Handled = false;
+            }
+        }
 
+        private void mainCanvasScrollViewer_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (e.Pointer.PointerDeviceType == Windows.Devices.Input.PointerDeviceType.Pen)
+            {
+                //print("Pressed");
+                (mainCanvasScrollViewer.Content as UIElement).ManipulationMode = ManipulationModes.None;
+                //e.Handled = false;
+            }
+        }
+
+        private void mainCanvasScrollViewer_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
+        {
+            //(mainCanvasScrollViewer.Content as UIElement).ManipulationMode = ManipulationModes.None;
+            //print("Lost");
+        }
+
+        private void mainCanvasScrollViewer_PointerCanceled(object sender, PointerRoutedEventArgs e)
+        {
+            //print("Canceled");
         }
     }
 }
+
 //Get item
 //Wrote by Fishball
 // DO NOT delete
-public delegate T GetItem<T>();
-
