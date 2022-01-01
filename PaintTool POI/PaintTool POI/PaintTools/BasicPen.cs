@@ -21,6 +21,11 @@ namespace PaintTool_POI.PaintTools
         public Color backColor { get; set; }
         public Color penColor { get; set; }
 
+        /// <summary>
+        /// The penDraw event.
+        /// </summary>
+        public Action<float2, float2> penDraw;
+
         public UIElement GetToolBoxItem()
         {
             return new PaintToolItemGrid("\xEDFB", "Calligraphy Pen");
@@ -46,7 +51,8 @@ namespace PaintTool_POI.PaintTools
             }
             else
             {
-                Helpers.DrawLine.RoundLine(lastPos, position, interBound, lastPressure, pressure, canvasImage, penColor);
+                //Helpers.DrawLine.RoundLine(lastPos, position, interBound, lastPressure, pressure, canvasImage, penColor);
+                penDraw?.Invoke(new float2((float)lastPos.X, (float)lastPos.Y), new float2((float)position.X, (float)position.Y));
             }
             lastPos = position;
             lastPressure = pressure;
