@@ -134,21 +134,51 @@ namespace PaintTool_POI
                 this.endPos = endPos;
             }
 
+            /// <summary>
+            /// The method to get the inverse of a matrix
+            /// </summary>
+            /// <param name="matrix">the input matrix</param>
+            /// <returns>the inverse of the matrix</returns>
+            
+            private float2x2 inverse(float2x2 matrix)
+            {
+                // Get the determinent
+                float det = matrix.M11 * matrix.M22 - matrix.M12 * matrix.M21;
+
+                // Using the 2x2 matrix inverse formula.
+                return new float2x2(matrix.M22 * det, -matrix.M12 * det, -matrix.M21 * det, matrix.M11 * det);
+            }
+
             public Float4 Execute()
             {
-                float m = (endPos.Y - startPos.Y) / (endPos.X - startPos.X);
+                // Roatation matrix that rotate 90 counter-clockwise.
+                float2x2 rot = new float2x2(0, -1, 1, 0);
 
-                float A = m;
-                float B = -1;
-                float C = startPos.Y - m * startPos.X;
+                // Getting the orthorgonal basis
+                float2 _u1 = endPos - startPos;
+                float2 u1 = _u1 / Hlsl.Length(_u1);
+                float2 u2 = Hlsl.Mul(rot, u1);
 
-                float dist = Hlsl.Abs(A * ThreadIds.X + B * ThreadIds.Y + C) / Hlsl.Sqrt(Hlsl.Pow(A, 2) + Hlsl.Pow(B, 2));
+                // Forming a subspace
+                float2x2 S_E = new float2x2(u1.X, u2.X, u1.Y, u2.Y);
+                float2x2 E_S = inverse(S_E);
 
-                float4 color = new float4(0, 0, 0, 1);
+                // Transforming current uv coord to S basis.
+                float2 v_S = Hlsl.Mul(E_S, ThreadIds.XY);
 
-                if (dist < 20)
+                // Transforming start and end pos coord to S basis.
+                float2 startPos_S = Hlsl.Mul(E_S, startPos);
+                float2 endPos_S = Hlsl.Mul(E_S, endPos);
+
+                float4 color = new float4(1, 1, 1, 1);
+
+                if (Hlsl.Abs(v_S.Y) < 20 && v_S.X > startPos_S.X && v_S.X < endPos_S.X)
                 {
-                    color = new float4(1, 1, 1, 1);
+                    color = new float4(0, 0, 0, 1);
+                }
+                else if (Hlsl.Distance(v_S, startPos_S) < 20 || Hlsl.Distance(v_S, endPos_S) < 20)
+                {
+                    color = new float4(0, 0, 0, 1);
                 }
 
                 return color;
@@ -158,7 +188,7 @@ namespace PaintTool_POI
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
             print("Shader");
-            GraphicsDevice.Default.ForEach(renderTexture, new DrawLineShader(renderTexture, new Float2(1000, 1000), new Float2(2000, 2000)));
+            GraphicsDevice.Default.ForEach(renderTexture, new DrawLineShader(renderTexture, new Float2(500, 500), new Float2(1000, 1000)));
         }
 
         private void MainCanvasGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
