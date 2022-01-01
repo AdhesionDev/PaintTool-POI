@@ -118,10 +118,47 @@ namespace PaintTool_POI
             }
         }
 
+        [EmbeddedBytecode(8, 8, 1)]
+        public readonly partial struct DrawLineShader : IPixelShader<float4>
+        {
+            public readonly IReadWriteTexture2D<float4> texture;
+
+            public readonly float2 startPos;
+
+            public readonly float2 endPos;
+
+            public DrawLineShader(IReadWriteTexture2D<Float4> texture, Float2 startPos, Float2 endPos)
+            {
+                this.texture = texture;
+                this.startPos = startPos;
+                this.endPos = endPos;
+            }
+
+            public Float4 Execute()
+            {
+                float m = (endPos.Y - startPos.Y) / (endPos.X - startPos.X);
+
+                float A = m;
+                float B = -1;
+                float C = startPos.Y - m * startPos.X;
+
+                float dist = Hlsl.Abs(A * ThreadIds.X + B * ThreadIds.Y + C) / Hlsl.Sqrt(Hlsl.Pow(A, 2) + Hlsl.Pow(B, 2));
+
+                float4 color = new float4(0, 0, 0, 1);
+
+                if (dist < 20)
+                {
+                    color = new float4(1, 1, 1, 1);
+                }
+
+                return color;
+            }
+        }
+
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
             print("Shader");
-            GraphicsDevice.Default.ForEach(renderTexture, new DrawShader(renderTexture, new Float2(2000, 2000)));
+            GraphicsDevice.Default.ForEach(renderTexture, new DrawLineShader(renderTexture, new Float2(1000, 1000), new Float2(2000, 2000)));
         }
 
         private void MainCanvasGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
