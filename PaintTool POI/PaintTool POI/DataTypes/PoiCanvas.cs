@@ -10,7 +10,6 @@ namespace PaintTool_POI.DataTypes
         {
             this.Width = Width;
             this.Height = Height;
-
         }
 
         public void AddLayer(PixelImage pixelImage)
@@ -30,7 +29,6 @@ namespace PaintTool_POI.DataTypes
         }
         public PixelImage GetLayerImage(int index)
         {
-
             PixelImage image = GetLayerBrush(index).Source;
             return image;
         }

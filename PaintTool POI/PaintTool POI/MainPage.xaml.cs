@@ -15,6 +15,11 @@ using PaintTool_POI.PaintTools;
 using Microsoft.Graphics.Canvas;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
+using ComputeSharp.Uwp;
+using ComputeSharp;
+using ComputeSharp.__Internals;
+using System.IO;
+using Windows.ApplicationModel;
 
 namespace PaintTool_POI
 {
@@ -28,6 +33,7 @@ namespace PaintTool_POI
         PaintTools.IPaintTool currentTool;
         PoiCanvas canvas;
 
+        ReadWriteTexture2D<Rgba32, Float4> renderTexture;
 
         #endregion
 
@@ -47,11 +53,75 @@ namespace PaintTool_POI
             mainCanvasGrid.PointerReleased += MainCanvasGrid_PointerReleased;
             mainCanvasGrid.PointerPressed += MainCanvasGrid_PointerPressed;
 
+            renderTexture = GraphicsDevice.Default.AllocateReadWriteTexture2D<Rgba32, Float4>(4000, 4000);
+
+            mainPanel.IsDynamicResolutionEnabled = true;
+
+            mainPanel.ShaderRunner = new RenderRunner()
+            {
+                texture = renderTexture
+            };
 
             InitializeCanvas(4000, 4000);
             AddToolItems();
             InitiallizeColors();
             InitiallizeTools();
+        }
+
+        public sealed class RenderRunner : IShaderRunner
+        {
+            public ReadWriteTexture2D<Rgba32, Float4>? texture;
+
+            public void Execute(IReadWriteTexture2D<Float4> texture, TimeSpan timespan)
+            {
+                GraphicsDevice.Default.ForEach(texture, new RenderShader(this.texture));
+            }
+        }
+
+        [EmbeddedBytecode(8, 8, 1)]
+        internal readonly partial struct RenderShader : IPixelShader<float4>
+        {
+            public readonly IReadWriteTexture2D<float4> texture;
+
+            public RenderShader(IReadWriteTexture2D<float4> texture)
+            {
+                this.texture = texture;
+            }
+
+            public Float4 Execute()
+            {
+                return texture[(int2)(ThreadIds.Normalized.XY * 4000)];
+            }
+        }
+
+        [EmbeddedBytecode(8, 8, 1)]
+        public readonly partial struct DrawShader : IPixelShader<float4>
+        {
+            public readonly IReadWriteTexture2D<float4> texture;
+
+            public readonly float2 coord;
+
+            public DrawShader(IReadWriteTexture2D<float4> texture, float2 coord)
+            {
+                this.texture = texture;
+                this.coord = coord;
+            }
+
+            public Float4 Execute()
+            {
+                float4 color = new float4(0, 0, 0, 1);
+                if (Hlsl.Distance(ThreadIds.XY, coord) < 200)
+                {
+                    color = new float4(1, 1, 1, 1);
+                }
+                return color;
+            }
+        }
+
+        private void DebugButton_Click(object sender, RoutedEventArgs e)
+        {
+            print("Shader");
+            GraphicsDevice.Default.ForEach(renderTexture, new DrawShader(renderTexture, new Float2(2000, 2000)));
         }
 
         private void MainCanvasGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -243,10 +313,7 @@ namespace PaintTool_POI
         {
             ZoomCanvas(-0.4f);
         }
-        private void DebugButton_Click(object sender, RoutedEventArgs e)
-        {
 
-        }
 
 
         private void RotateCWButton_Click(object sender, RoutedEventArgs e)
@@ -313,6 +380,6 @@ namespace PaintTool_POI
     }
 }
 
-//Get item
-//Wrote by Fishball
+// Get item
+// Wrote by Fish ball
 // DO NOT delete
