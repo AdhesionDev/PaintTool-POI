@@ -48,12 +48,12 @@ namespace PaintTool_POI.PaintTools
 
             }
 
-            for (int times = 0; times <= maxLength; times++)
+            for (int times = 0; times <= 1; times++)
             {
-                double protion = times / maxLength;
-                Vector2 currentPoint = vector * (float)protion;
+                double protion = times / 1;
+                float currentPoint = 1 * (float)protion;
 
-                float currentThickness = ((float)protion * pressureDiff + fromPressure) * thickness;
+                float currentThickness = ((float)protion * pressureDiff + pressureDiff) * thickness;
 
                 for (float x = -currentThickness; x < currentThickness; x++)
                 {
@@ -61,9 +61,9 @@ namespace PaintTool_POI.PaintTools
                     {
                         if (currentThickness * currentThickness > (x * x + y * y))
                         {
-                            if (Hlsl.Distance(ThreadIds.XY, coord) < currentThickness * currentThickness)
+                            if (Hlsl.Distance(ThreadIds.XY, lastPos) < currentThickness * currentThickness)
                             {
-                                color = new float4(1, 1, 1, 1);
+                                result = new float4(1, 1, 1, 1);
                             }
                         }
 
