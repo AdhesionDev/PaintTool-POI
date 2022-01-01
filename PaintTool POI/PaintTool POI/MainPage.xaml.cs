@@ -170,15 +170,15 @@ namespace PaintTool_POI
                 float2 startPos_S = Hlsl.Mul(E_S, startPos);
                 float2 endPos_S = Hlsl.Mul(E_S, endPos);
 
-                float4 color = new float4(1, 1, 1, 1);
+                float4 color = texture[ThreadIds.XY];
 
-                if (Hlsl.Abs(v_S.Y) < 20 && v_S.X > startPos_S.X && v_S.X < endPos_S.X)
+                if (Hlsl.Abs(v_S.Y - startPos_S.Y) < 20 && v_S.X > startPos_S.X && v_S.X < endPos_S.X)
                 {
-                    color = new float4(0, 0, 0, 1);
+                    color = new float4(1, 0, 0, 1);
                 }
                 else if (Hlsl.Distance(v_S, startPos_S) < 20 || Hlsl.Distance(v_S, endPos_S) < 20)
                 {
-                    color = new float4(0, 0, 0, 1);
+                    color = new float4(1, 0, 0, 1);
                 }
 
                 return color;
@@ -188,7 +188,7 @@ namespace PaintTool_POI
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
             print("Shader");
-            GraphicsDevice.Default.ForEach(renderTexture, new DrawLineShader(renderTexture, new Float2(500, 500), new Float2(1000, 1000)));
+            GraphicsDevice.Default.ForEach(renderTexture, new DrawLineShader(renderTexture, new Float2(500, 500), new Float2(500, 1000)));
         }
 
         private void MainCanvasGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -258,6 +258,13 @@ namespace PaintTool_POI
         {
             this.currentTool = new BasicPen(ValueHolder.penColor);
             currentTool.OnSelect();
+
+            // TODO: 移除这个野蛮的方案在未来
+            // Temp register draw method
+            ((BasicPen)currentTool).penDraw += (last, curr) =>
+            {
+                GraphicsDevice.Default.ForEach(renderTexture, new DrawLineShader(renderTexture, last, curr));
+            };
         }
 
         /// <summary>
