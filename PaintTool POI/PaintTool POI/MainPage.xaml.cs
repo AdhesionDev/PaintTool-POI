@@ -119,19 +119,21 @@ namespace PaintTool_POI
         }
 
         [EmbeddedBytecode(8, 8, 1)]
-        public readonly partial struct DrawLineShader : IPixelShader<float4>
+        public readonly partial struct DrawLineShader : IComputeShader
         {
             public readonly IReadWriteTexture2D<float4> texture;
 
             public readonly float2 startPos;
 
             public readonly float2 endPos;
+            public readonly float thikness;
 
-            public DrawLineShader(IReadWriteTexture2D<Float4> texture, Float2 startPos, Float2 endPos)
+            public DrawLineShader(IReadWriteTexture2D<Float4> texture, Float2 startPos, Float2 endPos, float thikness)
             {
                 this.texture = texture;
                 this.startPos = startPos;
                 this.endPos = endPos;
+                this.thikness = thikness;
             }
 
             /// <summary>
@@ -139,7 +141,7 @@ namespace PaintTool_POI
             /// </summary>
             /// <param name="matrix">the input matrix</param>
             /// <returns>the inverse of the matrix</returns>
-            
+
             private float2x2 inverse(float2x2 matrix)
             {
                 // Get the determinent
@@ -149,7 +151,7 @@ namespace PaintTool_POI
                 return new float2x2(matrix.M22 * det, -matrix.M12 * det, -matrix.M21 * det, matrix.M11 * det);
             }
 
-            public Float4 Execute()
+            public void Execute()
             {
                 // Roatation matrix that rotate 90 counter-clockwise.
                 float2x2 rot = new float2x2(0, -1, 1, 0);
@@ -170,25 +172,24 @@ namespace PaintTool_POI
                 float2 startPos_S = Hlsl.Mul(E_S, startPos);
                 float2 endPos_S = Hlsl.Mul(E_S, endPos);
 
-                float4 color = texture[ThreadIds.XY];
 
-                if (Hlsl.Abs(v_S.Y - startPos_S.Y) < 20 && v_S.X > startPos_S.X && v_S.X < endPos_S.X)
+                if (Hlsl.Abs(v_S.Y - startPos_S.Y) < thikness && v_S.X > startPos_S.X && v_S.X < endPos_S.X)
                 {
-                    color = new float4(1, 0, 0, 1);
+                    texture[ThreadIds.XY] = new float4(1, 0, 0, 1);
                 }
-                else if (Hlsl.Distance(v_S, startPos_S) < 20 || Hlsl.Distance(v_S, endPos_S) < 20)
+                else if (Hlsl.Distance(v_S, startPos_S) < thikness || Hlsl.Distance(v_S, endPos_S) < thikness)
                 {
-                    color = new float4(1, 0, 0, 1);
+                    texture[ThreadIds.XY] = new float4(1, 0, 0, 1);
                 }
 
-                return color;
+                //return color;
             }
         }
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
             print("Shader");
-            GraphicsDevice.Default.ForEach(renderTexture, new DrawLineShader(renderTexture, new Float2(500, 500), new Float2(500, 1000)));
+            //GraphicsDevice.Default.ForEach(renderTexture, new DrawLineShader(renderTexture, new Float2(500, 500), new Float2(500, 1000), 20f));
         }
 
         private void MainCanvasGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -256,16 +257,141 @@ namespace PaintTool_POI
 
         private void InitiallizeTools()
         {
-            this.currentTool = new BasicPen(ValueHolder.penColor);
+            this.currentTool = new BasicCurvePen();
+            currentTool.penColor = ValueHolder.penColor;
             currentTool.OnSelect();
 
             // TODO: 移除这个野蛮的方案在未来
             // Temp register draw method
-            ((BasicPen)currentTool).penDraw += (last, curr) =>
+            ((BasicCurvePen)currentTool).OnDraw += (refer0, refer1, refer2, currPos, lastPressure, currentPressure) =>
             {
-                GraphicsDevice.Default.ForEach(renderTexture, new DrawLineShader(renderTexture, last, curr));
+                float distance2 = (float)Math.Sqrt(((refer1.X - refer2.X) * (refer1.X - refer2.X) + (refer1.Y - refer2.Y) * (refer1.Y - refer2.Y)));
+                //print("distance2: " + distance2);
+                float2 lastFPos = new float2(-114, -1);
+                //print("=======");
+                //print(refer0 + "|" + refer1 + "|" + refer2 + "|" + currPos);
+
+                for (float f = 0; f <= distance2; f += 10)
+                {
+                    //print("F: " + f);
+                    float normalF = (f * 100) / (distance2 * 100);
+                    if (normalF > 1)
+                    {
+                        break;
+                    }
+                    float2 currFPos = GetSplinePoint(refer0, refer1, refer2, currPos, normalF);
+                    if (normalF > 1)
+                    {
+                        break;
+                    }
+                    if (lastFPos.X == -114)
+                    {
+                        //lastFPos = currFPos;
+                        //GraphicsDevice.Default.For(4000, 4000, new DrawLineShader(renderTexture, lastFPos, currFPos, 20f * currentPressure));
+                    }
+                    else
+                    {
+                        GraphicsDevice.Default.For(4000, 4000, new DrawLineShader(renderTexture, lastFPos, currFPos, 20f * currentPressure));
+                    }
+                    //lastF = normalF;
+                    lastFPos = currFPos;
+                }
+
             };
         }
+
+        public void DrawSplineWithLines()
+        {
+
+        }
+
+
+        public Float2 GetSplinePoint(List<Float2> points, float t)
+        {
+            int portion0, portion1, portion2, portion3;
+            portion1 = (int)t + 1;
+            portion2 = portion1 + 1;
+            portion3 = portion1 + 2;
+            portion0 = portion1 - 1;
+            //print(portion0.ToString());
+            //print(portion1.ToString());
+            //print(portion2.ToString());
+            //print(portion3.ToString());
+
+            t = t - (int)t;
+
+            float t2 = t * t;
+            float t3 = t * t * t;
+
+            float factor0 = 0.5f * ((-t3) + 2 * t2 - t);
+            float factor1 = 0.5f * (3 * t3 - 5 * t2 + 2);
+            float factor2 = 0.5f * (-3 * t3 + 4 * t2 + t);
+            float factor3 = 0.5f * (t3 - t2);
+
+            float tx =
+                points[portion0].X * factor0 +
+                points[portion1].X * factor1 +
+                points[portion2].X * factor2 +
+                points[portion3].X * factor3;
+            float ty =
+                points[portion0].Y * factor0 +
+                points[portion1].Y * factor1 +
+                points[portion2].Y * factor2 +
+                points[portion3].Y * factor3;
+            return new Float2(tx, ty);
+        }
+        public Float2 GetSplinePoint(Float2 p0, Float2 p1, Float2 p2, Float2 p3, float t)
+        {
+            int portion0, portion1, portion2, portion3;
+            portion1 = (int)t + 1;
+            portion2 = portion1 + 1;
+            portion3 = portion1 + 2;
+            portion0 = portion1 - 1;
+            //print(portion0.ToString());
+            //print(portion1.ToString());
+            //print(portion2.ToString());
+            //print(portion3.ToString());
+
+            t = t - (int)t;
+
+            float t2 = t * t;
+            float t3 = t * t * t;
+
+            float factor0 = 0.5f * ((-t3) + 2 * t2 - t);
+            float factor1 = 0.5f * (3 * t3 - 5 * t2 + 2);
+            float factor2 = 0.5f * (-3 * t3 + 4 * t2 + t);
+            float factor3 = 0.5f * (t3 - t2);
+
+            float tx =
+                p0.X * factor0 +
+                p1.X * factor1 +
+                p2.X * factor2 +
+                p3.X * factor3;
+            float ty =
+                p0.Y * factor0 +
+                p1.Y * factor1 +
+                p2.Y * factor2 +
+                p3.Y * factor3;
+            return new Float2(tx, ty);
+        }
+        public Float2 GetSplinePoint2(Float2 p0, Float2 p1, Float2 p2, Float2 p3, float t)
+        {
+            //print(p0.ToString());
+            //print(p1.ToString());
+            //print(p2.ToString());
+            //print(p3.ToString());
+
+            float x = 0.5f * (((t * t * t) * (-p0.X + 3 * p1.X - 3 * p2.X + p3.X)) + ((t * t) * (2 * p0.X - 5 * p1.X + 4 * p2.X - p3.X)) + (t * (-p0.X + p2.X)) + (2 * p1.X));
+            float y = 0.5f * (((t * t * t) * (-p0.Y + 3 * p1.Y - 3 * p2.Y + p3.Y)) + ((t * t) * (2 * p0.Y - 5 * p1.Y + 4 * p2.Y - p3.Y)) + (t * (-p0.Y + p2.Y)) + (2 * p1.Y));
+            //print(x + ", " + y);
+            //print(result.ToString());
+            return new Float2(x, y);
+        }
+
+
+
+
+
 
         /// <summary>
         /// Change the rotation of the canvas
