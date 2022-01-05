@@ -263,40 +263,44 @@ namespace PaintTool_POI
 
             // TODO: 移除这个野蛮的方案在未来
             // Temp register draw method
+
+            float step = 10;
+
             ((BasicCurvePen)currentTool).OnDraw += (refer0, refer1, refer2, currPos, lastPressure, currentPressure) =>
             {
                 float distance2 = (float)Math.Sqrt(((refer1.X - refer2.X) * (refer1.X - refer2.X) + (refer1.Y - refer2.Y) * (refer1.Y - refer2.Y)));
                 //print("distance2: " + distance2);
-                float2 lastFPos = new float2(-114, -1);
-                //print("=======");
-                //print(refer0 + "|" + refer1 + "|" + refer2 + "|" + currPos);
 
-                for (float f = 0; f <= distance2; f += 10)
+
+                float2 lastFPos = new float2(-1000000, -1);
+                for (float f = 0; f < distance2 + step; f += step)
                 {
                     //print("F: " + f);
                     float normalF = (f * 100) / (distance2 * 100);
-                    if (normalF > 1)
-                    {
-                        break;
-                    }
+
                     float2 currFPos = GetSplinePoint(refer0, refer1, refer2, currPos, normalF);
-                    if (normalF > 1)
+
+                    if (normalF >= 1)
                     {
+                        GraphicsDevice.Default.For(4000, 4000, new DrawLineShader(renderTexture, lastFPos, refer2, 20f * currentPressure));
                         break;
                     }
-                    if (lastFPos.X == -114)
+                    if (lastFPos.X == -1000000)
                     {
-                        //lastFPos = currFPos;
-                        //GraphicsDevice.Default.For(4000, 4000, new DrawLineShader(renderTexture, lastFPos, currFPos, 20f * currentPressure));
+                        //lastFPos = refer1;
+                        //GraphicsDevice.Default.For(4000, 4000, new DrawLineShader(renderTexture, refer1, currFPos, 20f * currentPressure));
                     }
                     else
                     {
                         GraphicsDevice.Default.For(4000, 4000, new DrawLineShader(renderTexture, lastFPos, currFPos, 20f * currentPressure));
                     }
-                    //lastF = normalF;
+
                     lastFPos = currFPos;
                 }
 
+
+
+                //print("Out for");
             };
         }
 
