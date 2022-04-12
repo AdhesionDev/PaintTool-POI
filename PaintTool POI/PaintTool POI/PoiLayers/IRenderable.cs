@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PaintTool_POI.PaintTools
+namespace PaintTool_POI.PoiLayers
 {
-    enum ColorTypes
+    internal interface IRenderable
     {
-        MonoColor,
-        DuoColor,
-        MoreColors,
-        Others
+        public UIElements GetUIElements();
     }
 }
